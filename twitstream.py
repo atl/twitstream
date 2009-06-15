@@ -23,8 +23,11 @@ POSTMETHODS = {'birddog': 'follow=%s',
 
 BASEURL = "http://stream.twitter.com/%s.json"
 
+def DEFAULTACTION(status):
+    print status['text'], '\n'
+    
 class TwitterStreamGET(asynchat.async_chat):
-    def __init__(self, user, pword, url):
+    def __init__(self, user, pword, url, action):
         asynchat.async_chat.__init__(self)
         self.authkey = base64.b64encode("%s:%s" % (user, pword))
         self.url = url
@@ -35,8 +38,9 @@ class TwitterStreamGET(asynchat.async_chat):
             self.proxy = tuple(proxy)
         except:
             self.proxy = None
-        self.set_terminator("\r\n")
         self.inbuf = ""
+        self.action = action
+        self.set_terminator("\r\n")
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
         if self.proxy:
             self.connect( self.proxy )
@@ -51,7 +55,7 @@ class TwitterStreamGET(asynchat.async_chat):
             print >> sys.stderr, self.inbuf
         elif self.inbuf.startswith('{'):
             a = json.loads(self.inbuf)
-            print a['text'], '\n'
+            self.action(a)
         self.inbuf = ""
     
     def handle_connect(self):
@@ -65,8 +69,8 @@ class TwitterStreamGET(asynchat.async_chat):
         self.close()
     
 class TwitterStreamPOST(TwitterStreamGET):
-    def __init__(self, user, pword, url, data=''):
-        TwitterStreamGET.__init__(self, user, pword, url)
+    def __init__(self, user, pword, url, action, data=''):
+        TwitterStreamGET.__init__(self, user, pword, url, action)
         self.data = data
     
     def handle_connect(self):
@@ -78,22 +82,23 @@ class TwitterStreamPOST(TwitterStreamGET):
         request += '\r\n'
         request += '%s\r\n' % self.data
         self.push(request)
-    
+
+parser = OptionParser(usage=USAGE)
+parser.add_option('-p', '--password', help="Twitter password (required)")
+parser.add_option('-u', '--user', help="Twitter username (required)")
+
 if __name__ == '__main__':
-    parser = OptionParser(usage=USAGE)
-    parser.add_option('-p', '--password', help="Twitter password (required)")
-    parser.add_option('-u', '--user', help="Twitter username (required)")
     (options, args) = parser.parse_args()
+    if not (options.password and options.user):
+        parser.error("Username and password required")
     if len(args) < 1:
         parser.error("Require one argument method")
     else:
         method = args[0]
         url = BASEURL % method
-    if not (options.password and options.user):
-        parser.error("Username and password required")
     if method in GETMETHODS:
-        c = TwitterStreamGET(options.user, options.password, url)
+        c = TwitterStreamGET(options.user, options.password, url, DEFAULTACTION)
     elif method in POSTMETHODS.keys():
         data = POSTMETHODS[method] % ','.join(args[1:])
-        d = TwitterStreamPOST(options.user, options.password, url, data)
+        d = TwitterStreamPOST(options.user, options.password, url, DEFAULTACTION, data)
     asyncore.loop()
