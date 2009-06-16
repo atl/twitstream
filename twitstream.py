@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import asynchat, asyncore, socket, base64, urllib, sys
 from urlparse import urlparse
 from optparse import OptionParser
