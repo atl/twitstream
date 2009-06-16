@@ -1,4 +1,5 @@
 import asynchat, asyncore, socket, base64, urllib, sys
+import getpass
 from urlparse import urlparse
 from optparse import OptionParser
 
@@ -94,8 +95,10 @@ parser.add_option('-u', '--username', help="Twitter username (required)")
 
 if __name__ == '__main__':
     (options, args) = parser.parse_args()
-    if not (options.password and options.username):
-        parser.error("Username and password required")
+    if not options.username:
+        parser.error("Username required")
+    if not options.password:
+        options.password = getpass.getpass(prompt='Password for %s: ' % options.username)
     if len(args) < 1:
         parser.error("Require one argument method")
     else:
