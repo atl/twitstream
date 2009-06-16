@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import textwrap
 import asyncore
 try:
@@ -37,7 +39,7 @@ twitstream.parser.add_option('-g', '--pages', help="Number of pages of favorites
 if __name__ == '__main__':
     (options, args) = twitstream.parser.parse_args()
     if not (options.password and options.username):
-        parser.error("Username and password required")
+        twitstream.parser.error("Username and password required")
     a = twitter.Api(username=options.username, password=options.password)
     if len(args) == 1:
         user = args[0]
