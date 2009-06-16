@@ -26,7 +26,7 @@ BASEURL = "http://stream.twitter.com/%s.json"
 USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream)"
 
 def DEFAULTACTION(status):
-    print status['text'], '\n'
+    print "%s:\t%s\n" % (status.get('user', {}).get('screen_name'), status.get('text'))
     
 class TwitterStreamGET(asynchat.async_chat):
     def __init__(self, user, pword, url, action):
