@@ -107,8 +107,8 @@ if __name__ == '__main__':
         method = args[0]
         url = BASEURL % method
     if method in GETMETHODS:
-        c = TwitterStreamGET(options.username, options.password, url, DEFAULTACTION)
+        TwitterStreamGET(options.username, options.password, url, DEFAULTACTION)
     elif method in POSTMETHODS.keys():
         data = POSTMETHODS[method] % ','.join(args[1:])
-        d = TwitterStreamPOST(options.username, options.password, url, DEFAULTACTION, data)
+        TwitterStreamPOST(options.username, options.password, url, DEFAULTACTION, data)
     asyncore.loop()

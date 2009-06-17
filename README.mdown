@@ -2,10 +2,16 @@
 
 A super-simple asynchronous python library for speaking with Twitter's
 [streaming API][]. Implemented basic authentication and non-authenticating
-proxy support in the rudimentary HTTP client. The idea was to make the least 
-effort possible to get things working.
+proxy support in the rudimentary HTTP client.
+
+The idea was to make the least effort possible to get things working. All of
+the standard HTTP client libraries seemed to block until the end of
+transmission, making them inappropriate for use with the streaming API.
+
+For a Twisted solution, see [twitty-twister][].
 
 [streaming API]: http://apiwiki.twitter.com/Streaming-API-Documentation
+[twitty-twister]: http://github.com/dustin/twitty-twister/blob/master/example/feed.py
 
 ## Usage ##
 
@@ -20,13 +26,22 @@ The methods available to the general public are `spritzer`, `track`, and
 
 ## follow\_faves ##
 
-As a proof-of-concept, there's follow\_faves.py, which samples your most 
-recent favorites and derives a list of people to follow from that. It then 
-uses the [streaming API][]'s `follow` method to get all tweets to and from 
+As a proof-of-concept, there's follow\_faves.py, which samples your most
+recent favorites and derives a list of people to follow from that. It then
+uses the [streaming API][]'s `follow` method to get all tweets to and from
 those special users. Think of it as a cheap way to `#fixreplies`:
 
     follow_faves.py -u username --pages 5
 
-This program uses [python-twitter][] to help parse tweets.
+## textori ##
 
+A simple implementation of a tweet display roughly modeled on [twistori][].
+Takes in keywords and pretty-prints a live tracking stream from the keywords 
+entered. The below-listed keywords are the default setting.
+
+    textori.py -u username love hate think believe feel wish
+
+Both sample programs use [python-twitter][] to help parse tweets.
+
+[twistori]: http://twistori.com/
 [python-twitter]: http://code.google.com/p/python-twitter/
