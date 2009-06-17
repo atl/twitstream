@@ -59,6 +59,6 @@ if __name__ == '__main__':
     method = 'track'
     prettyprint = Formatter(args)
     url = twitstream.BASEURL % method
-    data = twitstream.POSTMETHODS[method] % ','.join(args)
-    twitstream.TwitterStreamPOST(options.username, options.password, url, prettyprint, data)
+    data = [(twitstream.POSTMETHODS[method], ','.join(args))]
+    twitstream.TwitterStreamPOST(options.username, options.password, url, prettyprint, data, options.debug)
     asyncore.loop()

@@ -66,6 +66,6 @@ if __name__ == '__main__':
     print "Following:"
     print status_wrap.fill(", ".join(fave_usernames))
     url = twitstream.BASEURL % method
-    data = twitstream.POSTMETHODS[method] % ','.join(fave_friends)
-    twitstream.TwitterStreamPOST(options.username, options.password, url, prettyprint, data)
+    data = [(twitstream.POSTMETHODS[method], ','.join(fave_friends))]
+    twitstream.TwitterStreamPOST(options.username, options.password, url, prettyprint, data, options.debug)
     asyncore.loop()
