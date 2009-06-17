@@ -46,6 +46,7 @@ if __name__ == '__main__':
     twitstream.parser.add_option('-g', '--pages', help="Number of pages of favorites", type='int', default=3)
     twitstream.parser.usage = USAGE
     (options, args) = twitstream.parser.parse_args()
+    
     if not options.username:
         twitstream.parser.error("Username required")
     if not options.password:
@@ -55,6 +56,7 @@ if __name__ == '__main__':
         user = args[0]
     else:
         user = None
+    
     fave_friends = set()
     fave_usernames = set()
     for p in range(options.pages):
@@ -62,10 +64,10 @@ if __name__ == '__main__':
         for f in ff:
             fave_friends.add(str(f.user.id))
             fave_usernames.add(str(f.user.screen_name))
-    method = 'follow'
+    
     print "Following:"
     print status_wrap.fill(", ".join(fave_usernames))
-    url = twitstream.BASEURL % method
-    data = [(twitstream.POSTMETHODS[method], ','.join(fave_friends))]
-    twitstream.TwitterStreamPOST(options.username, options.password, url, prettyprint, data, options.debug)
+    
+    twitstream.follow(options.username, options.password, prettyprint, fave_friends, options.debug)
+    
     asyncore.loop()

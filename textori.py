@@ -49,6 +49,7 @@ class Formatter(object):
 if __name__ == '__main__':
     twitstream.parser.usage = USAGE
     (options, args) = twitstream.parser.parse_args()
+    
     if not options.username:
         twitstream.parser.error("Username required")
     if not options.password:
@@ -56,9 +57,9 @@ if __name__ == '__main__':
     a = twitter.Api(username=options.username, password=options.password)
     if len(args) < 1:
         args = ['love', 'hate', 'think', 'believe', 'feel', 'wish']
-    method = 'track'
+    
     prettyprint = Formatter(args)
-    url = twitstream.BASEURL % method
-    data = [(twitstream.POSTMETHODS[method], ','.join(args))]
-    twitstream.TwitterStreamPOST(options.username, options.password, url, prettyprint, data, options.debug)
+    
+    twitstream.track(options.username, options.password, prettyprint, args, options.debug)
+    
     asyncore.loop()

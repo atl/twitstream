@@ -4,6 +4,7 @@ import asynchat, asyncore, socket, base64, urllib, sys
 import getpass
 from urlparse import urlparse
 from optparse import OptionParser
+from functools import partial
 
 try:
     import json
@@ -102,6 +103,26 @@ class TwitterStreamPOST(TwitterStreamGET):
         return request
     
 
+def twitstream(method, user, pword, action, defaultdata=None, debug=False, **kwargs):
+    url = BASEURL % method
+    if method in GETMETHODS:
+        return TwitterStreamGET(user, pword, url, action, debug)
+    elif method in POSTMETHODS.keys():
+        data = {POSTMETHODS[method]: ','.join(defaultdata)}
+        data.update(kwargs)
+        return TwitterStreamPOST(user, pword, url, action, data, debug)
+    else:
+        raise NotImplementedError("Unknown method: %s" % method)
+
+firehose   = partial(twitstream, 'firehose')
+gardenhose = partial(twitstream, 'gardenhose')
+spritzer   = partial(twitstream, 'spritzer')
+birddog    = partial(twitstream, 'birddog')
+shadow     = partial(twitstream, 'shadow')
+follow     = partial(twitstream, 'follow')
+track      = partial(twitstream, 'track')
+
+
 parser = OptionParser(usage=USAGE)
 parser.add_option('-p', '--password', help="Twitter password")
 parser.add_option('-u', '--username', help="Twitter username (required)")
@@ -118,10 +139,5 @@ if __name__ == '__main__':
         parser.error("Require one argument method")
     else:
         method = args[0]
-        url = BASEURL % method
-    if method in GETMETHODS:
-        TwitterStreamGET(options.username, options.password, url, DEFAULTACTION, debug=options.debug)
-    elif method in POSTMETHODS.keys():
-        data = [(POSTMETHODS[method], ','.join(args[1:]))]
-        TwitterStreamPOST(options.username, options.password, url, DEFAULTACTION, data, debug=options.debug)
+    twitstream(method, options.username, options.password, DEFAULTACTION, defaultdata=args[1:], debug=options.debug)
     asyncore.loop()
