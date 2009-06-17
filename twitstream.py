@@ -130,6 +130,9 @@ shadow     = partial(twitstream, 'shadow')
 follow     = partial(twitstream, 'follow')
 track      = partial(twitstream, 'track')
 
+spritzer.__doc__ = "obtain a real-time stream of a subset of all public status messages"
+follow.__doc__   = "receive all public status messages from, and all public replies to, the twitter user IDs"
+track.__doc__    = "receive all real-time mentions of any of the input terms"
 
 parser = OptionParser(usage=USAGE)
 parser.add_option('-p', '--password', help="Twitter password")
