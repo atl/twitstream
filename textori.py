@@ -54,7 +54,6 @@ if __name__ == '__main__':
         twitstream.parser.error("Username required")
     if not options.password:
         options.password = getpass.getpass(prompt='Password for %s: ' % options.username)
-    a = twitter.Api(username=options.username, password=options.password)
     if len(args) < 1:
         args = ['love', 'hate', 'think', 'believe', 'feel', 'wish']
     

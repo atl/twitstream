@@ -52,7 +52,8 @@ if __name__ == '__main__':
     if not options.password:
         options.password = getpass.getpass(prompt='Password for %s: ' % options.username)
     a = twitter.Api(username=options.username, password=options.password)
-    if len(args) == 1:
+    
+    if len(args) > 0:
         user = args[0]
     else:
         user = None
