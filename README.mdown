@@ -1,6 +1,9 @@
 # twitstream #
 
-A super-simple asynchronous python library for speaking with Twitter's [streaming API][]. Implemented basic authentication and non-authenticating proxy support.
+A super-simple asynchronous python library for speaking with Twitter's
+[streaming API][]. Implemented basic authentication and non-authenticating
+proxy support. The idea was to make the least effort possible to get things
+working.
 
 [streaming API]: http://apiwiki.twitter.com/Streaming-API-Documentation
 
@@ -8,9 +11,21 @@ A super-simple asynchronous python library for speaking with Twitter's [streamin
 
 Twitstream is usable from the command line as a rudimentary client:
 
-    python twitstream.py -u username -p password spritzer
-    python twitstream.py -u username -p password track ftw fail
-    python twitstream.py -u username -p password follow 12 13 15 16 20 87
+    twitstream.py -u username spritzer
+    twitstream.py -u username track ftw fail
+    twitstream.py -u username follow 12 13 15 16 20 87
 
 The public methods are `spritzer`, `track`, and `follow`.
 
+## follow\_faves ##
+
+As a proof-of-concept, there's follow\_faves.py, which samples your most 
+recent favorites and derives a list of people to follow from that. It then 
+uses the [streaming API][]'s `follow` method to get all tweets to and from 
+those special users. Think of it as a cheap way to `#fixreplies`:
+
+    follow_faves.py -u username --pages 5
+
+This program uses [python-twitter][] to help parse tweets.
+
+[python-twitter]: http://code.google.com/p/python-twitter/

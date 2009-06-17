@@ -92,7 +92,7 @@ class TwitterStreamPOST(TwitterStreamGET):
     
 
 parser = OptionParser(usage=USAGE)
-parser.add_option('-p', '--password', help="Twitter password (required)")
+parser.add_option('-p', '--password', help="Twitter password")
 parser.add_option('-u', '--username', help="Twitter username (required)")
 
 if __name__ == '__main__':
