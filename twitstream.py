@@ -20,7 +20,7 @@ GETMETHODS  = ['firehose',
                'gardenhose',
                'spritzer',]
 
-POSTMETHODS = {'birddog': 'follow',
+POSTPARAMS  = {'birddog': 'follow',
                'shadow':  'follow',
                'follow':  'follow',
                'track':   'track',}
@@ -104,11 +104,19 @@ class TwitterStreamPOST(TwitterStreamGET):
     
 
 def twitstream(method, user, pword, action, defaultdata=None, debug=False, **kwargs):
+    '''General function to set up an asynchat object on twitter. Chooses GET or
+    POST according to the API method.
+    
+    Parameter action is a callable that takes a dict derived from simplejson.
+    
+    Parameter defaultdata expects an iterable of strings as the default parameter 
+    (follow or track) on a POST method. If there are additional parameters you
+    wish to use, they can be passed in **kwargs.'''
     url = BASEURL % method
     if method in GETMETHODS:
         return TwitterStreamGET(user, pword, url, action, debug)
-    elif method in POSTMETHODS.keys():
-        data = {POSTMETHODS[method]: ','.join(defaultdata)}
+    elif method in POSTPARAMS.keys():
+        data = {POSTPARAMS[method]: ','.join(defaultdata)}
         data.update(kwargs)
         return TwitterStreamPOST(user, pword, url, action, data, debug)
     else:
