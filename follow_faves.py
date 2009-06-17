@@ -2,6 +2,7 @@
 
 import textwrap
 import asyncore
+import getpass
 try:
     import json as simplejson
 except ImportError:
@@ -38,8 +39,10 @@ twitstream.parser.add_option('-g', '--pages', help="Number of pages of favorites
 
 if __name__ == '__main__':
     (options, args) = twitstream.parser.parse_args()
-    if not (options.password and options.username):
-        twitstream.parser.error("Username and password required")
+    if not options.username:
+        parser.error("Username required")
+    if not options.password:
+        options.password = getpass.getpass(prompt='Password for %s: ' % options.username)
     a = twitter.Api(username=options.username, password=options.password)
     if len(args) == 1:
         user = args[0]
