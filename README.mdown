@@ -2,8 +2,8 @@
 
 A super-simple asynchronous python library for speaking with Twitter's
 [streaming API][]. Implemented basic authentication and non-authenticating
-proxy support. The idea was to make the least effort possible to get things
-working.
+proxy support in the rudimentary HTTP client. The idea was to make the least 
+effort possible to get things working.
 
 [streaming API]: http://apiwiki.twitter.com/Streaming-API-Documentation
 
@@ -15,7 +15,8 @@ Twitstream is usable from the command line as a rudimentary client:
     twitstream.py -u username track ftw fail
     twitstream.py -u username follow 12 13 15 16 20 87
 
-The public methods are `spritzer`, `track`, and `follow`.
+The methods available to the general public are `spritzer`, `track`, and 
+`follow`.
 
 ## follow\_faves ##
 
