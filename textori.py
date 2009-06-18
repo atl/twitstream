@@ -28,10 +28,10 @@ class Formatter(object):
     
     url_pat = re.compile(r'\b(http://\S+[^\s\.\,\?\)\]\>])', re.IGNORECASE)
     ent_pat = re.compile("&#?\w+;")
+    wrap = textwrap.TextWrapper(initial_indent='    ', subsequent_indent='    ')
     
     def __init__(self, keywords=[]):
         self.kw_pat = re.compile('\\b(%s)\\b' % "|".join(keywords), re.IGNORECASE)
-        self.wrap = textwrap.TextWrapper(initial_indent='    ', subsequent_indent='    ')
     
     def __call__(self, status):
         st = twitter.Status.NewFromJsonDict(status)

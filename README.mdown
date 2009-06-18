@@ -21,8 +21,9 @@ Twitstream is usable from the command line as a rudimentary client:
     twitstream.py -u username track ftw fail
     twitstream.py -u username follow 12 13 15 16 20 87
 
-The methods available to the general public are `spritzer`, `track`, and 
-`follow`.
+Every usage of the streaming API requires authentication against a user
+account. The methods available to the general public are `spritzer`, `track`,
+and `follow`.
 
 ## follow\_faves ##
 
@@ -40,6 +41,9 @@ Takes in keywords and pretty-prints a live tracking stream from the keywords
 entered. The below-listed keywords are the default setting.
 
     textori.py -u username love hate think believe feel wish
+
+The code in this example is most notable for the tweet text unescaping and
+parsing all accomplished in a single (lengthy) callable.
 
 Both sample programs use [python-twitter][] to help parse tweets.
 
