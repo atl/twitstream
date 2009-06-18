@@ -40,7 +40,7 @@ class TwitterStreamGET(asynchat.async_chat):
         self.host = urlparse(url)[1]
         try:
             proxy = urlparse(urllib.getproxies()['http'])[1].split(':')
-            proxy[1] = int(proxy[1])
+            proxy[1] = int(proxy[1]) or 80
             self.proxy = tuple(proxy)
         except:
             self.proxy = None
@@ -103,7 +103,7 @@ class TwitterStreamPOST(TwitterStreamGET):
         return request
     
 
-def twitstream(method, user, pword, action, defaultdata=None, debug=False, **kwargs):
+def twitstream(method, user, pword, action, defaultdata=[], debug=False, **kwargs):
     '''General function to set up an asynchat object on twitter. Chooses GET or
     POST according to the API method.
     

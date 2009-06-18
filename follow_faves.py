@@ -24,7 +24,7 @@ def GetFavorites(api,
     if user:
         url = 'http://twitter.com/favorites/%s.json' % user
     elif not user and not api._username:
-        raise TwitterError("User must be specified if API is not authenticated.")
+        raise twitter.TwitterError("User must be specified if API is not authenticated.")
     else:
         url = 'http://twitter.com/favorites.json'
     parameters = {}
