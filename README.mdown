@@ -73,6 +73,8 @@ handler's (`[asyncore][]`'s) loop. The only programming you need to provide is
 a function (or callable) that gets called with a dictionary containing the
 latest single status.
 
+[asyncore]: http://docs.python.org/library/asyncore.html
+
 After setting up the asynchronous object, you just need to call
 `asyncore.loop()` to open the long-life HTTP connection.
 
