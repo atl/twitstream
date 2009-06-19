@@ -3,7 +3,7 @@
 import asynchat, asyncore, socket, base64, urllib, sys
 import getpass
 from urlparse import urlparse
-from optparse import OptionParser
+from optparse import OptionParser, OptionGroup
 from functools import partial
 
 try:
@@ -12,7 +12,7 @@ except ImportError:
     import simplejson as json
 
 
-USAGE = """usage: %prog <credentials> method [params]
+USAGE = """%prog <credentials> method [params]
 
 Public methods are 'spritzer', 'follow', and 'track'."""
 
@@ -135,8 +135,11 @@ follow.__doc__   = "receive all public status messages from, and all public repl
 track.__doc__    = "receive all real-time mentions of any of the input terms"
 
 parser = OptionParser(usage=USAGE)
-parser.add_option('-p', '--password', help="Twitter password")
-parser.add_option('-u', '--username', help="Twitter username (required)")
+group = OptionGroup(parser, "credentials",
+                    "All usage of the Streaming API requires user credentials.")
+group.add_option('-p', '--password', help="Twitter password")
+group.add_option('-u', '--username', help="Twitter username (required)")
+parser.add_option_group(group)
 parser.add_option('--debug', action='store_true', dest='debug', 
                     default=False, help="Print debug information")
 

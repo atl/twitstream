@@ -13,6 +13,16 @@ For a Twisted solution, see [twitty-twister][].
 [streaming API]: http://apiwiki.twitter.com/Streaming-API-Documentation
 [twitty-twister]: http://github.com/dustin/twitty-twister/blob/master/example/feed.py
 
+## Requirements ##
+
+Python 2.5 or higher. If using Python 2.5, also uses [simplejson][] (which is
+included in Python 2.6 as [json][]). The more elaborate example programs
+`fixreplies.py` and `textori.py` also require the [python-twitter][] library.
+
+[simplejson]: http://pypi.python.org/pypi/simplejson/
+[json]: http://docs.python.org/library/json.html
+[python-twitter]: http://code.google.com/p/python-twitter/
+
 ## Usage ##
 
 Twitstream is usable from the command line as a rudimentary client:
@@ -25,19 +35,10 @@ Every usage of the streaming API requires authentication against a user
 account. The methods available to the general public are `spritzer`, `track`,
 and `follow`.
 
-## follow\_faves ##
-
-As a proof-of-concept, there's follow\_faves.py, which samples your most
-recent favorites and derives a list of people to follow from that. It then
-uses the [streaming API][]'s `follow` method to get all tweets to and from
-those special users. Think of it as a cheap way to `#fixreplies`:
-
-    follow_faves.py -u username --pages 5
-
 ## textori ##
 
 A simple implementation of a tweet display roughly modeled on [twistori][].
-Takes in keywords and pretty-prints a live tracking stream from the keywords 
+Takes in keywords and pretty-prints a live `track`ing stream from the keywords 
 entered. The below-listed keywords are the default setting.
 
     textori.py -u username love hate think believe feel wish
@@ -45,7 +46,68 @@ entered. The below-listed keywords are the default setting.
 The code in this example is most notable for the tweet text unescaping and
 parsing all accomplished in a single (lengthy) callable.
 
-Both sample programs use [python-twitter][] to help parse tweets.
-
 [twistori]: http://twistori.com/
-[python-twitter]: http://code.google.com/p/python-twitter/
+
+## fixreplies ##
+
+As a proof-of-concept, there's the modestly-named `fixreplies.py`, which mines
+your friends, followers, favorites and/or conversations to derive a list of
+people to follow (which can cause a lot of API calls at startup). It then uses
+the [streaming API][]'s `follow` method to get all tweets to and from those
+chosen users:
+
+    fixreplies.py -u username --pages 5 --max 200 --chat --friends
+
+This code example uses a variant upon the status pretty-printing of the
+twistori example. The chief purpose of this example is to use the traditional
+API in order to get more use out of the streaming API.
+
+# Programming #
+
+The interface provides both relatively low-level specialized streaming HTTP
+GET and POST classes (currently geared specifically towards Twitter), a
+general `twitstream` function that accepts an API method name and routes the
+software there, and individual functions that match the API methods. Each of
+these returns an `asynchat` object that runs in the asynchronous socket
+handler's (`[asyncore][]`'s) loop. The only programming you need to provide is
+a function (or callable) that gets called with a dictionary containing the
+latest single status.
+
+After setting up the asynchronous object, you just need to call
+`asyncore.loop()` to open the long-life HTTP connection.
+
+For example, the minimal `spritz.py` example shows the least amount of work
+needed to have a fully working program:
+
+    #!/usr/bin/env python
+    
+    # The two modules needed externally:
+    import getpass, asyncore
+    
+    # The key module provided here:
+    import twitstream
+    
+    # Provide documentation:
+    USAGE = """%prog [options] <credentials> 
+      
+    Show a real-time subset of all twitter statuses."""
+    
+    # Define a function/callable called on every status:
+    def callback(status):
+        print "%s:\t%s\n" % (status.get('user', {}).get('screen_name'), status.get('text'))
+    
+    if __name__ == '__main__':
+        # Inherit the built in parser and use it to get credentials:
+        parser = twitstream.parser
+        parser.usage = USAGE
+        (options, args) = parser.parse_args()
+        if not options.username:
+            parser.error("Username required")
+        if not options.password:
+            options.password = getpass.getpass(prompt='Password for %s: ' % options.username)
+        
+        # Call a specific API method in the twitstream module: 
+        twitstream.spritzer(options.username, options.password, callback, debug=options.debug)
+        
+        # Loop forever on the streaming call:
+        asyncore.loop()
