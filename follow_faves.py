@@ -3,6 +3,8 @@
 import textwrap
 import asyncore
 import getpass
+import re
+import htmlentitydefs
 try:
     import json as simplejson
 except ImportError:
@@ -37,10 +39,63 @@ def GetFavorites(api,
 
 status_wrap = textwrap.TextWrapper(initial_indent='    ', subsequent_indent='    ')
 
-def prettyprint(status):
-    st = twitter.Status.NewFromJsonDict(status)
-    print '\033[94m' + st.user.screen_name + ':\033[0m'
-    print status_wrap.fill(st.text)
+class Formatter(object):
+    
+    url_pat = re.compile(r'\b(http://\S+[^\s\.\,\?\)\]\>])', re.IGNORECASE)
+    ent_pat = re.compile("&#?\w+;")
+    user_pat = re.compile(r'(@\w+)')
+    wrap = textwrap.TextWrapper(initial_indent='    ', subsequent_indent='    ')
+    
+    def __init__(self, friends=[]):
+        self.friend_pat = re.compile('(@%s)\\b' % "|@".join(friends), re.IGNORECASE)
+        self.friends = friends
+    
+    def __call__(self, status):
+        st = twitter.Status.NewFromJsonDict(status)
+        if st.user.screen_name in self.friends:
+            print '\033[7m' + st.user.screen_name + '\033[0m:'
+        else:
+            print '\033[95m' + st.user.screen_name + ':\033[0m'            
+        mess = self.ent_pat.sub(self.unescape, st.text)
+        mess = self.wrap.fill(mess)
+        mess = self.friend_pat.sub(self.inverse, mess)
+        mess = self.user_pat.sub(self.bold, mess)
+        mess = self.url_pat.sub(self.underline, mess)
+        print mess + '\n'
+    
+    @staticmethod
+    def bold(m):
+        return '\033[1m' + m.group(1) + '\033[0m'
+    
+    @staticmethod    
+    def underline(m):
+        return '\033[4m' + m.group(1) + '\033[0m'
+    
+    @staticmethod
+    def inverse(m):
+        return '\033[7m' + m.group(1) + '\033[0m'
+    
+    @staticmethod
+    def unescape(m):
+        "http://effbot.org/zone/re-sub.htm#unescape-html"
+        text = m.group(0)
+        if text[:2] == "&#":
+            # character reference
+            try:
+                if text[:3] == "&#x":
+                    return unichr(int(text[3:-1], 16))
+                else:
+                    return unichr(int(text[2:-1]))
+            except ValueError:
+                pass
+        else:
+            # named entity
+            try:
+                text = unichr(htmlentitydefs.name2codepoint[text[1:-1]])
+            except KeyError:
+                pass
+        return text # leave as is
+    
 
 if __name__ == '__main__':
     twitstream.parser.add_option('-g', '--pages', help="Number of pages of favorites", type='int', default=3)
@@ -68,7 +123,7 @@ if __name__ == '__main__':
     
     print "Following:"
     print status_wrap.fill(", ".join(fave_usernames))
-    
+    prettyprint = Formatter(fave_usernames)
     twitstream.follow(options.username, options.password, prettyprint, fave_friends, options.debug)
     
     asyncore.loop()

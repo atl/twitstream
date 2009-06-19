@@ -8,7 +8,6 @@ import asyncore
 import getpass
 import re
 import htmlentitydefs
-from xml.sax import saxutils
 try:
     import json as simplejson
 except ImportError:
