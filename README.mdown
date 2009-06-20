@@ -56,12 +56,13 @@ people to follow (which can cause a lot of API calls at startup). It then uses
 the [streaming API][]'s `follow` method to get all tweets to and from those
 chosen users. For example, the following command line will check your latest
 500 status messages for people whom you've replied to, and filters out the
-people you do not already follow:
+people you do not already follow as well as a couple celebrities that everyone
+seems to empathize with:
 
-    fixreplies.py --pages 5 --chat --friends
+    fixreplies.py --pages 5 --chat --friends --exclude=stephenfry,Oprah
 
 This code example uses a variant upon the status pretty-printing of the
-twistori example. The chief purpose of this example is to use the traditional
+textori example. The chief purpose of this example is to use the traditional
 API in order to get more use out of the streaming API.
 
 # Programming #

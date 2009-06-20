@@ -167,6 +167,7 @@ if __name__ == '__main__':
     group.add_option('--favorites', help="Limit to recent favorites", action="store_true", dest='favorites')
     group.add_option('--mention', help="Limit to those who mention the user", action='store_true', dest='mention')
     group.add_option('--chat', help="Limit to those to whom the user replies", action='store_true', dest='chat')
+    group.add_option('--exclude', help="Manually exclude a comma-delimited user list")
     parser.add_option_group(group)
     parser.usage = USAGE
     (options, args) = parser.parse_args()
@@ -225,6 +226,15 @@ if __name__ == '__main__':
             friends = dict(map(lambda x:(x,''), friends))
         follow = filter_dict_with_set(follow, friends)
         if options.debug: print "after filtering followers:", follow
+    
+    if options.exclude:
+        ss = options.exclude.split(',')
+        invdict = dict(map(lambda x:(x[1],x[0]), follow.items()))
+        for s in ss:
+            if s in invdict:
+                del invdict[s]
+        follow = dict(map(lambda x:(x[1],x[0]), invdict.items()))
+        if options.debug: print "after filtering excludes:", follow
     
     options.maximum = min(200, options.maximum)
     if len(follow) > options.maximum:
