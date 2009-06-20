@@ -69,8 +69,8 @@ GET and POST classes (currently geared specifically towards Twitter), a
 general `twitstream` function that accepts an API method name and routes the
 software there, and individual functions that match the API methods. Each of
 these returns an `asynchat` object that runs in the asynchronous socket
-handler's (`[asyncore][]`'s) loop. The only programming you need to provide is
-a function (or callable) that gets called with a dictionary containing the
+handler's ([asyncore][]'s) loop. The only programming you need to provide is a
+function (or callable) that gets called with a dictionary containing the
 latest single status.
 
 [asyncore]: http://docs.python.org/library/asyncore.html
@@ -103,10 +103,7 @@ needed to have a fully working program:
         parser = twitstream.parser
         parser.usage = USAGE
         (options, args) = parser.parse_args()
-        if not options.username:
-            parser.error("Username required")
-        if not options.password:
-            options.password = getpass.getpass(prompt='Password for %s: ' % options.username)
+        twitstream.ensure_credentials(options)
         
         # Call a specific API method in the twitstream module: 
         twitstream.spritzer(options.username, options.password, callback, debug=options.debug)

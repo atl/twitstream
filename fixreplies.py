@@ -158,7 +158,7 @@ def filter_dict_with_set(a, b):
 if __name__ == '__main__':
     parser = twitstream.parser
     parser.add_option('-g', '--pages', help="Number of pages to check", type='int', default=3)
-    parser.add_option('-m', '--maximum', help="Maximum number of users to track (max: 200)", type='int', default=50)
+    parser.add_option('-m', '--maximum', help="Maximum number of users to track (default/max: 200)", type='int', default=200)
     group = OptionGroup(parser, "filters",
                         "Combining more than one of the user filters takes the "
                         "intersection of the predicates.")
@@ -171,10 +171,11 @@ if __name__ == '__main__':
     parser.usage = USAGE
     (options, args) = parser.parse_args()
     
-    if not options.username:
-        parser.error("Username required")
-    if not options.password:
-        options.password = getpass.getpass(prompt='Password for %s: ' % options.username)
+    if not(options.friends or options.followers or options.favorites or options.mention or options.chat):
+        raise StandardError("Require at least one filter to be named")
+    
+    twitstream.ensure_credentials(options)
+    
     a = twitter.Api(username=options.username, password=options.password)
     
     if len(args) > 0:
@@ -190,7 +191,7 @@ if __name__ == '__main__':
             for s in ss:
                 friends[str(s.user.id)] = str(s.user.screen_name)
         follow = filter_dict_with_set(follow, friends)
-        if options.debug: print "favorites:", follow
+        if options.debug: print "after filtering favorites:", follow
     
     if options.mention:
         friends = dict()
@@ -199,7 +200,7 @@ if __name__ == '__main__':
             for s in ss:
                 friends[str(s.user.id)] = str(s.user.screen_name)
         follow = filter_dict_with_set(follow, friends)
-        if options.debug: print "mention:", follow
+        if options.debug: print "after filtering mentions:", follow
     
     if options.chat:
         friends = dict()
@@ -209,23 +210,21 @@ if __name__ == '__main__':
                 if s.in_reply_to_user_id:
                     friends[str(s.in_reply_to_user_id)] = str(s.in_reply_to_screen_name)
         follow = filter_dict_with_set(follow, friends)
-        if options.debug: print "chat:", follow
+        if options.debug: print "after filtering chatters:", follow
     
     if options.friends:
         friends = set(map(str, GetFriendIds(a, screen_name=user)))
         if not follow:
             friends = dict(map(lambda x:(x,''), friends))
-        if options.debug: print "friends:", friends
         follow = filter_dict_with_set(follow, friends)
-        if options.debug: print "friends:", follow
+        if options.debug: print "after filtering friends:", follow
     
     if options.followers:
         friends = set(map(str, GetFollowerIds(a, screen_name=user)))
         if not follow:
             friends = dict(map(lambda x:(x,''), friends))
-        if options.debug: print "followers:", friends
         follow = filter_dict_with_set(follow, friends)
-        if options.debug: print "followers:", follow
+        if options.debug: print "after filtering followers:", follow
     
     options.maximum = min(200, options.maximum)
     if len(follow) > options.maximum:
@@ -241,6 +240,6 @@ if __name__ == '__main__':
     
     prettyprint = Formatter(follow_usernames)
     
-    twitstream.follow(options.username, options.password, prettyprint, follow_ids, options.debug)
+    twitstream.follow(options.username, options.password, prettyprint, follow_ids)
     
     asyncore.loop()

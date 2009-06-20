@@ -136,22 +136,33 @@ track.__doc__    = "receive all real-time mentions of any of the input terms"
 
 parser = OptionParser(usage=USAGE)
 group = OptionGroup(parser, "credentials",
-                    "All usage of the Streaming API requires user credentials.")
+                    "All usage of the Streaming API requires user credentials. "
+                    "Will prompt if either of them are missing.")
 group.add_option('-p', '--password', help="Twitter password")
-group.add_option('-u', '--username', help="Twitter username (required)")
+group.add_option('-u', '--username', help="Twitter username")
 parser.add_option_group(group)
 parser.add_option('--debug', action='store_true', dest='debug', 
                     default=False, help="Print debug information")
 
-if __name__ == '__main__':
-    (options, args) = parser.parse_args()
+def ensure_credentials(options):
     if not options.username:
-        parser.error("Username required")
+        options.username = raw_input("Twitter username: ")
     if not options.password:
         options.password = getpass.getpass(prompt='Password for %s: ' % options.username)
+    return options
+
+if __name__ == '__main__':
+    (options, args) = parser.parse_args()
+    
     if len(args) < 1:
         parser.error("Require one argument method")
     else:
         method = args[0]
+        if method not in GETMETHODS and method not in POSTPARAMS:
+            raise NotImplementedError("Unknown method: %s" % method)
+    
+    ensure_credentials(options)
+    
     twitstream(method, options.username, options.password, DEFAULTACTION, defaultdata=args[1:], debug=options.debug)
+    
     asyncore.loop()

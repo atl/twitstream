@@ -74,11 +74,8 @@ class Formatter(object):
 if __name__ == '__main__':
     twitstream.parser.usage = USAGE
     (options, args) = twitstream.parser.parse_args()
+    twitstream.ensure_credentials(options)
     
-    if not options.username:
-        twitstream.parser.error("Username required")
-    if not options.password:
-        options.password = getpass.getpass(prompt='Password for %s: ' % options.username)
     if len(args) < 1:
         args = ['love', 'hate', 'think', 'believe', 'feel', 'wish']
     
