@@ -27,9 +27,9 @@ included in Python 2.6 as [json][]). The more elaborate example programs
 
 Twitstream is usable from the command line as a rudimentary client:
 
-    twitstream.py -u username spritzer
-    twitstream.py -u username track ftw fail
-    twitstream.py -u username follow 12 13 15 16 20 87
+    twitstream.py spritzer
+    twitstream.py track ftw fail
+    twitstream.py follow 12 13 15 16 20 87
 
 Every usage of the streaming API requires authentication against a user
 account. The methods available to the general public are `spritzer`, `track`,
@@ -41,7 +41,7 @@ A simple implementation of a tweet display roughly modeled on [twistori][].
 Takes in keywords and pretty-prints a live `track`ing stream from the keywords 
 entered. The below-listed keywords are the default setting.
 
-    textori.py -u username love hate think believe feel wish
+    textori.py love hate think believe feel wish
 
 The code in this example is most notable for the tweet text unescaping and
 parsing all accomplished in a single (lengthy) callable.
@@ -54,9 +54,11 @@ As a proof-of-concept, there's the modestly-named `fixreplies.py`, which mines
 your friends, followers, favorites and/or conversations to derive a list of
 people to follow (which can cause a lot of API calls at startup). It then uses
 the [streaming API][]'s `follow` method to get all tweets to and from those
-chosen users:
+chosen users. For example, the following command line will check your latest
+500 status messages for people whom you've replied to, and filters out the
+people you do not already follow:
 
-    fixreplies.py -u username --pages 5 --max 200 --chat --friends
+    fixreplies.py --pages 5 --chat --friends
 
 This code example uses a variant upon the status pretty-printing of the
 twistori example. The chief purpose of this example is to use the traditional
