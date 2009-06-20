@@ -12,9 +12,10 @@ except ImportError:
     import simplejson as json
 
 
-USAGE = """%prog <credentials> method [params]
+USAGE = """%prog [options] method [params]
 
-Public methods are 'spritzer', 'follow', and 'track'."""
+Public methods are 'spritzer', 'follow', and 'track'. Follow takes
+keywords as parameters, and track takes user IDs."""
 
 GETMETHODS  = ['firehose',
                'gardenhose',

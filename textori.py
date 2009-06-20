@@ -16,7 +16,7 @@ except ImportError:
 import twitter
 import twitstream
 
-USAGE = """%prog <credentials> [options] [[keyword1] keyword2 ...]
+USAGE = """%prog [options] [[keyword1] keyword2 ...]
 
 Pretty-prints status messages that match one of the keywords.
 

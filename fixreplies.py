@@ -14,7 +14,7 @@ except ImportError:
 import twitter
 import twitstream
 
-USAGE = """%prog <credentials> [options] [filters] [user]
+USAGE = """%prog [options] [user]
 
 Grabs the users that are members of all of the filter sets.
 The Streaming API 'follow' method gets each of the named users'
@@ -157,7 +157,7 @@ def filter_dict_with_set(a, b):
 
 if __name__ == '__main__':
     parser = twitstream.parser
-    parser.add_option('-g', '--pages', help="Number of pages to check", type='int', default=3)
+    parser.add_option('-g', '--pages', help="Number of pages to check (default: 3)", type='int', default=3)
     parser.add_option('-m', '--maximum', help="Maximum number of users to track (default/max: 200)", type='int', default=200)
     group = OptionGroup(parser, "filters",
                         "Combining more than one of the user filters takes the "
