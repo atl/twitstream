@@ -81,35 +81,28 @@ latest single status.
 After setting up the asynchronous object, you just need to call
 `asyncore.loop()` to open the long-life HTTP connection.
 
-For example, the minimal `spritz.py` example shows the least amount of work
-needed to have a fully working program:
+For example, the minimal
+[spritz.py](http://github.com/atl/twitstream/blob/master/spritz.py) example
+shows the basic amount of work needed to have a fully working program, using
+some built-in facilities for command-line option processing, documentation,
+and prompting for a username and password. For something truly minimal, you
+could use something like this:
 
     #!/usr/bin/env python
     
-    # The two modules needed externally:
-    import getpass, asyncore
-    
-    # The key module provided here:
+    import asyncore
     import twitstream
     
-    # Provide documentation:
-    USAGE = """%prog [options] <credentials> 
-      
-    Show a real-time subset of all twitter statuses."""
+    USER = 'test'
+    PASS = 'test'
     
-    # Define a function/callable called on every status:
+    # Define a function/callable to be called on every status:
     def callback(status):
-        print "%s:\t%s\n" % (status.get('user', {}).get('screen_name'), status.get('text'))
+        print "%s:\t%s\n" % (status['user']['screen_name'], status['text'])
     
     if __name__ == '__main__':
-        # Inherit the built in parser and use it to get credentials:
-        parser = twitstream.parser
-        parser.usage = USAGE
-        (options, args) = parser.parse_args()
-        twitstream.ensure_credentials(options)
-        
-        # Call a specific API method in the twitstream module: 
-        twitstream.spritzer(options.username, options.password, callback, debug=options.debug)
+        # Call a specific API method from the twitstream module: 
+        twitstream.spritzer(USER, PASS, callback)
         
         # Loop forever on the streaming call:
         asyncore.loop()

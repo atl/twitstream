@@ -298,13 +298,14 @@ if __name__ == '__main__':
     parser.usage = USAGE
     (options, args) = parser.parse_args()
     
+    print USAGE
+    
     ensure_credentials(options)
     
     a = twitter.Api(username=options.username, password=options.password)
     
     user = options.username
     
-    print USAGE
     
     follow = dict()
     try:
@@ -346,7 +347,6 @@ if __name__ == '__main__':
     
     try:
         zz = raw_input("Limit to your friends? ")
-        print zz
         assert(zz.startswith(('y','Y')))
         friends = set(map(str, GetFriendIds(a, screen_name=user)))
         if not follow:
