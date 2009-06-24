@@ -2,6 +2,7 @@ import pycurl
 import sys
 from urllib import urlencode
 try:
+    # I'm told that simplejson is faster than 2.6's json
     import simplejson as json
 except ImportError:
     import json
@@ -15,7 +16,7 @@ class TwitterStreamGET(object):
         self.url = url
         try:
             proxy = urlparse(urllib.getproxies()['http'])[1].split(':')
-            # Respect libproxy's default of 1080:
+            # Respect libcurl's default of 1080:
             proxy[1] = int(proxy[1]) or 1080
             self.proxy = tuple(proxy)
         except:
@@ -23,16 +24,17 @@ class TwitterStreamGET(object):
         self.contents = ""
         self.action = action
         self.debug = debug
-        self.request = None
+        self._request = None
     
-    def prepare_request(self):
-        self.request = pycurl.Curl()
-        self.request.setopt(self.request.URL, self.url)
-        self.request.setopt(self.request.USERPWD, self.userpass)
+    @property
+    def request(self):
+        self._request = pycurl.Curl()
+        self._request.setopt(self._request.URL, self.url)
+        self._request.setopt(self._request.USERPWD, self.userpass)
         if self.proxy:
-            self.request.setopt(self.request.PROXY, self.proxy)
-        self.request.setopt(self.request.WRITEFUNCTION, self.body_callback)
-        return self.request
+            self._request.setopt(self._request.PROXY, self.proxy)
+        self._request.setopt(self._request.WRITEFUNCTION, self.body_callback)
+        return self._request
     
     def body_callback(self, buf):
         self.contents += buf
@@ -45,10 +47,10 @@ class TwitterStreamGET(object):
     
     def run(self, request=None):
         if request:
-            self.request = request
+            self._request = request
         else:
-            self.prepare_request()
-        self.request.perform()
+            self.request
+        self._request.perform()
     
 
 class TwitterStreamPOST(TwitterStreamGET):
@@ -56,15 +58,16 @@ class TwitterStreamPOST(TwitterStreamGET):
         TwitterStreamGET.__init__(self, user, pword, url, action, debug)
         self.data = data
     
-    def prepare_request(self):
-        self.request = pycurl.Curl()
-        self.request.setopt
-        self.request.setopt(self.request.URL, self.url)
-        self.request.setopt(self.request.USERPWD, self.userpass)
+    @property
+    def request(self):
+        self._request = pycurl.Curl()
+        self._request.setopt(self._request.URL, self.url)
+        self._request.setopt(self._request.USERPWD, self.userpass)
         if self.proxy:
-            self.request.setopt(self.request.PROXY, self.proxy)
-        self.request.setopt(self.request.POST, 1)
-        self.request.setopt(self.request.POSTFIELDS, urlencode(self.data))
-        self.request.setopt(self.request.WRITEFUNCTION, self.body_callback)
-        return self.request
+            self._request.setopt(self._request.PROXY, self.proxy)
+        self._request.setopt(self._request.WRITEFUNCTION, self.body_callback)
+        self._request.setopt(self._request.POST, 1)
+        self._request.setopt(self._request.POSTFIELDS, urlencode(self.data))
+        return self._request
     
+

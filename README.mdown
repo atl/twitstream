@@ -19,9 +19,16 @@ Python 2.5 or higher. If using Python 2.5, also uses [simplejson][] (which is
 included in Python 2.6 as [json][]). The more elaborate example programs
 `fixreplies.py` and `textori.py` also require the [python-twitter][] library.
 
+If you have [PycURL][] installed, you can benefit from its time-tested,
+non-blocking HTTP client implementation. Otherwise, it falls back to the
+custom, basic implementation built upon the standard library. Both the
+`twitasync.py` and the `twitcurl.py` modules provide the same basic interface
+to the main `twitstream.py` module.
+
 [simplejson]: http://pypi.python.org/pypi/simplejson/
 [json]: http://docs.python.org/library/json.html
 [python-twitter]: http://code.google.com/p/python-twitter/
+[PycURL]: http://pycurl.sourceforge.net/
 
 ## Usage ##
 
