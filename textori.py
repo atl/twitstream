@@ -81,6 +81,6 @@ if __name__ == '__main__':
     
     prettyprint = Formatter(args)
     
-    twitstream.track(options.username, options.password, prettyprint, args, options.debug)
+    stream = twitstream.track(options.username, options.password, prettyprint, args, options.debug)
     
-    asyncore.loop()
+    stream.run()

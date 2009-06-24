@@ -250,6 +250,6 @@ if __name__ == '__main__':
     
     prettyprint = Formatter(follow_usernames)
     
-    twitstream.follow(options.username, options.password, prettyprint, follow_ids)
+    stream = twitstream.follow(options.username, options.password, prettyprint, follow_ids)
     
-    asyncore.loop()
+    stream.run()

@@ -23,7 +23,7 @@ if __name__ == '__main__':
     twitstream.ensure_credentials(options)
     
     # Call a specific API method in the twitstream module: 
-    twitstream.spritzer(options.username, options.password, callback, debug=options.debug)
+    stream = twitstream.spritzer(options.username, options.password, callback, debug=options.debug)
     
     # Loop forever on the streaming call:
-    asyncore.loop()
+    stream.run()
