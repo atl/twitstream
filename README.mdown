@@ -22,8 +22,9 @@ included in Python 2.6 as [json][]). The more elaborate example programs
 If you have [PycURL][] installed, you can benefit from its time-tested,
 non-blocking HTTP client implementation. Otherwise, it falls back to the
 custom, basic implementation built upon the standard library. Both the
-`twitasync.py` and the `twitcurl.py` modules provide the same basic interface
-to the main `twitstream.py` module.
+`twitasync.py` and the `twitcurl.py` modules transparently expose the same
+basic interface to the main `twitstream.py` module: all typical usage will
+focus on the `twitstream` module.
 
 [simplejson]: http://pypi.python.org/pypi/simplejson/
 [json]: http://docs.python.org/library/json.html
@@ -69,8 +70,8 @@ seems to empathize with:
     fixreplies.py --pages 5 --chat --friends --exclude=stephenfry,Oprah
 
 This code example uses a variant upon the status pretty-printing of the
-textori example. The chief purpose of this example is to use the traditional
-API in order to get more use out of the streaming API.
+textori example. The chief purpose of this example is to use Twitter's
+traditional API in order to get more use out of the streaming API.
 
 # Programming #
 
