@@ -68,6 +68,9 @@ class TwitterStreamGET(asynchat.async_chat):
     @staticmethod
     def run():
         asyncore.loop()
+    
+    def cleanup(self):
+        self.close()
 
 class TwitterStreamPOST(TwitterStreamGET):
     def __init__(self, user, pword, url, action, data=tuple(), debug=False):

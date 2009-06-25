@@ -49,6 +49,8 @@ class TwitterStreamGET(object):
             self.request
         self._request.perform()
     
+    def cleanup(self):
+        self._request.close()
 
 class TwitterStreamPOST(TwitterStreamGET):
     def __init__(self, user, pword, url, action, data=tuple(), debug=False):

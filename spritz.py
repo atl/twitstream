@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-# The two modules needed externally:
-import getpass, asyncore
-
 # The key module provided here:
 import twitstream
 
