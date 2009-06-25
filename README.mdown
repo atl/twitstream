@@ -76,18 +76,17 @@ traditional API in order to get more use out of the streaming API.
 # Programming #
 
 The interface provides both relatively low-level specialized streaming HTTP
-GET and POST classes (currently geared specifically towards Twitter), a
-general `twitstream` function that accepts an API method name and routes the
-software there, and individual functions that match the API methods. Each of
-these returns an `asynchat` object that runs in the asynchronous socket
-handler's ([asyncore][]'s) loop. The only programming you need to provide is a
-function (or callable) that gets called with a dictionary containing the
-latest single status.
+GET and POST classes (currently geared specifically towards Twitter, and
+provided in both an [asynchat][] and a [libcurl][] flavor), a general
+`twitstream` function that accepts an API method name and routes the software
+there, and individual functions that match the API methods. Each of these
+returns a request-like object that, when invoked with the `run()` method,
+opens the connection and continues into a loop until interrupted. The only
+programming you need to provide is a function (or callable) that gets called
+with a dictionary containing the latest single status.
 
-[asyncore]: http://docs.python.org/library/asyncore.html
-
-After setting up the asynchronous object, you just need to call
-`asyncore.loop()` to open the long-life HTTP connection.
+[asynchat]: http://docs.python.org/library/asynchat.html
+[libcurl]: http://curl.haxx.se/libcurl/
 
 For example, the minimal
 [spritz.py](http://github.com/atl/twitstream/blob/master/spritz.py) example

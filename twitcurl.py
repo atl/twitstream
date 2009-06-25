@@ -1,6 +1,6 @@
 import pycurl
 import sys
-from urllib import urlencode
+from urllib import urlencode, getproxies
 try:
     # I'm told that simplejson is faster than 2.6's json
     import simplejson as json
@@ -12,18 +12,15 @@ USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream)"
 
 class TwitterStreamGET(object):
     def __init__(self, user, pword, url, action, debug=False):
+        self.debug = debug
         self.userpass = "%s:%s" % (user, pword)
         self.url = url
         try:
-            proxy = urlparse(urllib.getproxies()['http'])[1].split(':')
-            # Respect libcurl's default of 1080:
-            proxy[1] = int(proxy[1]) or 1080
-            self.proxy = tuple(proxy)
+            self.proxy = getproxies()['http']
         except:
-            self.proxy = None
+            self.proxy = ''
         self.contents = ""
         self.action = action
-        self.debug = debug
         self._request = None
     
     @property
