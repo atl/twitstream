@@ -24,6 +24,11 @@ def linked(string):
     else:
         return string
 
+def sec_to_hours(offset):
+    if not offset:
+        return -24.
+    return offset/3600.
+
 def urls(string):
     g = url_re.search(string)
     if g:
@@ -72,13 +77,18 @@ class Counter(object):
                 print "%6d:\t%s" % (val[1], val[0])
         else:
             hist = sorted(self.counter.items(), key=lambda x: x[0])
-            for val in hist:
-                print "%6d:\t%d" % val
+            if self.field in self.FLOATKEYS:
+                for val in hist:
+                    print "%+02.2f:\t%d" % val
+            else:
+                for val in hist:
+                    print "%6d:\t%d" % val
     
     FIELDS = {'source':     ('source', linked),
               'client':     ('source', linked),
               'user':       ('user', 'screen_name'),
               'timezone':   ('user', 'time_zone'),
+              'utcoffset':  ('user', 'utc_offset', sec_to_hours),
               'followers':  ('user', 'followers_count', log_spacing),
               'friends':    ('user', 'friends_count', log_spacing),
               'favourites': ('user', 'favourites_count', log_spacing),
@@ -90,6 +100,7 @@ class Counter(object):
               }
     
     UNORDERED = set(('source', 'client', 'user', 'timezone', 'urldomains'))
+    FLOATKEYS = set(('utcoffset',))
 
 if __name__ == '__main__':
     parser = twitstream.parser
