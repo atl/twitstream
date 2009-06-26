@@ -85,22 +85,23 @@ prints a summary of the statistic collected.
 
 # Programming #
 
-The interface provides both relatively low-level specialized streaming HTTP
-GET and POST classes (currently geared specifically towards Twitter, and
-provided in both an [asynchat][] and a [libcurl][] flavor), a general
-`twitstream` function that accepts an API method name and routes the software
-there, and individual functions that match the API methods. Each of these
-returns a request-like object that, when invoked with the `run()` method,
-opens the connection and continues into a loop until interrupted. The only
-programming you need to provide is a function (or callable) that gets called
-with a dictionary containing the latest single status.
+The interface provides relatively low-level specialized streaming HTTP GET and
+POST classes (currently geared specifically towards Twitter, and provided in
+both an [asynchat][] and a [libcurl][] flavor), a general `twitstream`
+function that accepts an API method name and routes the software there, and
+individual functions that match the API methods (including `spritzer`,
+`track`, and `follow`). Each of these returns a request-like object that, when
+invoked with the `run()` method, opens the connection and continues into a
+loop until interrupted. The only programming you need to provide is a function
+(or callable) that gets called with a dictionary containing the latest single
+status.
 
 [asynchat]: http://docs.python.org/library/asynchat.html
 [libcurl]: http://curl.haxx.se/libcurl/
 
-For example, the minimal
+For example, the basic
 [spritz.py](http://github.com/atl/twitstream/blob/master/spritz.py) example
-shows the basic amount of work needed to have a fully working program, using
+shows the minimum amount of work needed to have a fully working program, using
 some built-in facilities for command-line option processing, documentation,
 and prompting for a username and password. For something truly minimal, you
 could use something like this:
