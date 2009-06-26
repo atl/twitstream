@@ -25,9 +25,10 @@ def linked(string):
         return string
 
 def sec_to_hours(offset):
-    if not offset:
+    if offset == None:
         return -24.
-    return offset/3600.
+    else:
+        return offset/3600.
 
 def urls(string):
     g = url_re.search(string)
