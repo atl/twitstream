@@ -80,8 +80,8 @@ callback. `stats.py` sets up a counter/histogram on the status characteristic
 desired. When halted (interrupted with ctrl-C or a `KeyboardInterrupt`), it
 prints a summary of the statistic collected.
 
-  stats.py friends
-  stats.py timezone --max 15
+    stats.py friends
+    stats.py timezone --max 15
 
 # Programming #
 
