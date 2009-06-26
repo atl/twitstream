@@ -73,6 +73,16 @@ This code example uses a variant upon the status pretty-printing of the
 textori example. The chief purpose of this example is to use Twitter's
 traditional API in order to get more use out of the streaming API.
 
+## stats ##
+
+A proof-of-concept showing that you don't need to print out every tweet in the
+callback. `stats.py` sets up a counter/histogram on the status characteristic
+desired. When halted (interrupted with ctrl-C or a `KeyboardInterrupt`), it
+prints a summary of the statistic collected.
+
+  stats.py friends
+  stats.py timezone --max 15
+
 # Programming #
 
 The interface provides both relatively low-level specialized streaming HTTP
