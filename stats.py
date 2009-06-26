@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-from collections import defaultdict
 import types
 import re
 import math
 import sys
+from collections import defaultdict
+from urlparse import urlparse
 
-# The key module provided here:
 import twitstream
 
-# Provide documentation:
 USAGE = """stats.py [options] <key>
 
 Extract statistics from the spritzer stream until interrupted.
 Potential keys are: %s"""
 
 link_re = re.compile(">([^<]+)</a>")
+url_re = re.compile(r'\b(http://\S+[^\s\.\,\?\)\]\>])', re.IGNORECASE)
 
 def linked(string):
     m = link_re.search(string)
@@ -23,6 +23,19 @@ def linked(string):
         return m.groups()[0]
     else:
         return string
+
+def urls(string):
+    g = url_re.search(string)
+    if g:
+        return g.groups()
+    else:
+        return []
+
+def first_url_domain(array):
+    if array:
+        return urlparse(array[0])[1]
+    else:
+        return None
 
 def log_spacing(integer):
     m = math.sqrt(10)
@@ -72,9 +85,11 @@ class Counter(object):
               'favorites':  ('user', 'favourites_count', log_spacing),
               'statuses':   ('user', 'statuses_count', log_spacing),
               'length':     ('text', len, linear_chunk(10)),
+              'counturls':  ('text', urls, len),
+              'urldomains': ('text', urls, first_url_domain),
               }
     
-    UNORDERED = set(('source', 'client', 'user', 'timezone'))
+    UNORDERED = set(('source', 'client', 'user', 'timezone', 'urldomains'))
 
 if __name__ == '__main__':
     parser = twitstream.parser
