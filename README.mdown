@@ -31,6 +31,13 @@ focus on the `twitstream` module.
 [python-twitter]: http://code.google.com/p/python-twitter/
 [PycURL]: http://pycurl.sourceforge.net/
 
+---
+# Help Wanted #
+Anyone with setup.py experience want to branch this and make a proper installable module from this? That would be much appreciated.
+
+---
+
+
 ## Usage ##
 
 Twitstream is usable from the command line as a rudimentary client:
