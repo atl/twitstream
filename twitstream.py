@@ -27,6 +27,10 @@ POSTPARAMS  = {'birddog': 'follow',
 BASEURL = "http://stream.twitter.com/%s.json"
 
 def DEFAULTACTION(status):
+    if "user" not in status:
+        if options.debug:
+            print >> sys.stderr, status
+        return
     print "%s:\t%s\n" % (status.get('user', {}).get('screen_name'), status.get('text'))
 
 

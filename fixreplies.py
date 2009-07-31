@@ -4,6 +4,7 @@ import textwrap
 import asyncore
 import getpass
 import re
+import sys
 import htmlentitydefs
 from optparse import OptionGroup
 try:
@@ -101,6 +102,10 @@ class Formatter(object):
     
     def __call__(self, status):
         st = twitter.Status.NewFromJsonDict(status)
+        if not st.user:
+            if options.debug:
+                print >> sys.stderr, status
+            return
         if st.user.screen_name in self.friends:
             print '\033[94m\033[1m' + st.user.screen_name + '\033[0m:'
         else:

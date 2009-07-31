@@ -7,6 +7,7 @@ import textwrap
 import asyncore
 import getpass
 import re
+import sys
 import htmlentitydefs
 try:
     import json as simplejson
@@ -35,6 +36,8 @@ class Formatter(object):
     def __call__(self, status):
         st = twitter.Status.NewFromJsonDict(status)
         if not st.user:
+            if options.debug:
+                print >> sys.stderr, status
             return
         print '\033[94m' + st.user.screen_name + ':\033[0m'
         mess = self.ent_pat.sub(self.unescape, st.text)
