@@ -34,6 +34,8 @@ class Formatter(object):
     
     def __call__(self, status):
         st = twitter.Status.NewFromJsonDict(status)
+        if not st.user:
+            return
         print '\033[94m' + st.user.screen_name + ':\033[0m'
         mess = self.ent_pat.sub(self.unescape, st.text)
         mess = self.wrap.fill(mess)

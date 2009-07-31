@@ -31,13 +31,6 @@ focus on the `twitstream` module.
 [python-twitter]: http://code.google.com/p/python-twitter/
 [PycURL]: http://pycurl.sourceforge.net/
 
----
-# Help Wanted #
-Anyone with setup.py experience want to branch this and make a proper installable module from this? That would be much appreciated.
-
----
-
-
 ## Usage ##
 
 Twitstream is usable from the command line as a rudimentary client:
@@ -122,7 +115,7 @@ could use something like this:
     
     # Define a function/callable to be called on every status:
     def callback(status):
-        print "%s:\t%s\n" % (status['user']['screen_name'], status['text'])
+        print "%s:\t%s\n" % (status.get('user', {}).get('screen_name'), status.get('text'))
     
     if __name__ == '__main__':
         # Call a specific API method from the twitstream module: 

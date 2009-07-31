@@ -13,7 +13,7 @@ except ImportError:
 USAGE = """%prog [options] method [params]
 
 Public methods are 'spritzer', 'follow', and 'track'. Follow takes
-keywords as parameters, and track takes user IDs."""
+user IDs as parameters, and track takes keywords."""
 
 GETMETHODS  = ['firehose',
                'gardenhose',
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
     
     if len(args) < 1:
-        parser.error("Require one argument method")
+        parser.error("requires one method argument")
     else:
         method = args[0]
         if method not in GETMETHODS and method not in POSTPARAMS:
