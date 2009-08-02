@@ -62,6 +62,10 @@ class Counter(object):
     
     def __call__(self, status):
         key = status
+        if 'user' not in key:
+            if options.debug:
+                print >> sys.stderr, status
+            return
         for elem in self.path:
             if isinstance(elem, types.FunctionType) or isinstance(elem, types.BuiltinFunctionType):
                 key = elem(key)
