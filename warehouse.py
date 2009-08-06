@@ -3,6 +3,7 @@
 import sys
 import twitstream
 from urlparse import urlunsplit, urlsplit
+from binascii import unhexlify
 
 
 # Provide documentation:
@@ -13,34 +14,35 @@ The optional dburl is constructed as:
   [mongo|couch]://host:port/path
 
 MongoDB offers up to two levels of path (database/collection), while
-CouchDB only uses one. The default is to try CouchDB in preference to
+CouchDB uses one. The default behavior is to try CouchDB in preference to
 MongoDB on localhost, with a path of "test"."""
 
 class Mongo(object):
     from pymongo.connection import Connection
     from pymongo.objectid import ObjectId
     def __init__(self, location=None, port=None, path=''):
+        if not port:
+            port = None
         self.conn = self.Connection(host=location, port=port)
-        pth = path.split('/', 1)
-        if len(pth) < 1:
-            pth.append('test')
-        if len(pth) < 2:
-            pth.append(pth[0])
-        coll = conn[pth[0]]
-        self.db = coll[pth[1]]
+        (pathdb, foo, pathcoll) = path.partition('/')
+        if not pathdb:
+            pathdb = 'test'
+        if not pathcoll:
+            pathcoll = pathdb
+        self.db = self.conn[pathdb][pathcoll]
     
     def status_id(self, num):
-        return self.ObjectId('74776974' + ("%x" % num).zfill(16))
+        return self.ObjectId(unhexlify('74776974' + ("%x" % num).zfill(16)))
     
     def remove(self, num):
-        self.db.remove(status_id(num))
+        self.db.remove(self.status_id(num))
     
     def twitsafe(self, status):
+        status['_id'] = self.status_id(status.get('id'))
         if status.get('id'):
             status['id'] = ('%x' % status['id']).zfill(16)
         if status.get('in_reply_to_status_id'):
             status['in_reply_to_status_id'] = ('%x' % status['in_reply_to_status_id']).zfill(16)
-        status['_id'] = self.status_id(status.get('id'))
         return status
     
     def store(self, num, status):
@@ -56,8 +58,9 @@ class Couch(object):
         if not path:
             path = 'test'
         if path not in self.conn:
-            self.conn.create(path)
-        self.db = self.conn[path]
+            self.db = self.conn.create(path)
+        else:
+            self.db = self.conn[path]
     
     def status_id(self, num):
         return ("%x" % num).zfill(16)
@@ -84,9 +87,9 @@ class Warehouse(object):
                 dburl = 'couch://'
                 del couchdb
             except ImportError:
-                import mongodb
+                import pymongo
                 dburl = 'mongo://'
-                del mongodb
+                del pymongo
         (self.scheme, self.location, self.port, self.path) = self.urlparse(dburl)
         self.db = KNOWN[self.scheme](self.location, self.port, self.path)
     
@@ -95,15 +98,16 @@ class Warehouse(object):
             try:
                 self.db.remove(status.get('delete').get('status').get('id'))
                 print >> sys.stderr, "-",
-            except:
+            except StandardError:
                 print >> sys.stderr, ",",
             sys.stderr.flush()
         elif status.get('user'):
+            idnum = status.get('id')
             self.db.twitsafe(status)
             try:
-                self.db.store(status.get('id'), status)
+                self.db.store(idnum, status)
                 print >> sys.stderr, ".",
-            except ImportError:
+            except StandardError:
                 print >> sys.stderr, ";",
             sys.stderr.flush()
         else:
@@ -113,8 +117,9 @@ class Warehouse(object):
         (scheme, foo, rem, bar, baz) = urlsplit(url)
         rem = rem.lstrip('/')
         (locport, foo, path) = rem.partition('/')
-        (location, foo, port) = locport.rpartition(':')
-        return (scheme, location, port, path)
+        (location, foo, port) = locport.partition(':')
+        if not port: port = 0
+        return (scheme, location, int(port), path)
 
 if __name__ == '__main__':
     # Inherit the built in parser and use it to get credentials:
@@ -133,4 +138,8 @@ if __name__ == '__main__':
     stream = twitstream.spritzer(options.username, options.password, callback, debug=options.debug)
     
     # Loop forever on the streaming call:
-    stream.run()
+    try:
+        stream.run()
+    finally:
+        stream.cleanup()
+    

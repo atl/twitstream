@@ -70,6 +70,7 @@ class TwitterStreamGET(asynchat.async_chat):
         asyncore.loop()
     
     def cleanup(self):
+        print >> sys.stderr, self.inbuf
         self.close()
 
 class TwitterStreamPOST(TwitterStreamGET):

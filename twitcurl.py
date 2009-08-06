@@ -50,6 +50,7 @@ class TwitterStreamGET(object):
         self._request.perform()
     
     def cleanup(self):
+        print >> sys.stderr, self.contents
         self._request.close()
 
 class TwitterStreamPOST(TwitterStreamGET):

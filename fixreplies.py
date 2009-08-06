@@ -151,9 +151,12 @@ class Formatter(object):
     
 
 class Growler(object):
-    from Growl import GrowlNotifier
-    def __init__(self, user, follow_usernames):
-        self.growl = self.GrowlNotifier(applicationName="twitstream", notifications=['Status', 'Self', 'Friend', 'Reply', 'Direct'])
+    from Growl import GrowlNotifier, Image
+    def __init__(self, user=None, follow_usernames=[]):
+        image = self.Image.imageFromPath('./twitter.bmp')
+        self.growl = self.GrowlNotifier(applicationName="twitstream", 
+            notifications=['Status', 'Self', 'Friend', 'Reply', 'Direct'],
+            applicationIcon=image)
         self.growl.register()
         self.user = user
         self.follow_usernames = set(follow_usernames)
@@ -172,8 +175,8 @@ class Growler(object):
         else:
             status_type = "Status"
         self.growl.notify(status_type,
-                          "%s (%s)" % (status['user']['name'], status['user']['screen_name']),
-                          status['text'])
+            "%s (%s)" % (status['user']['name'], status['user']['screen_name']),
+            status['text'])
 
 def filter_dict_with_set(a, b):
     if not a:
