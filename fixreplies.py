@@ -150,6 +150,31 @@ class Formatter(object):
         return text # leave as is
     
 
+class Growler(object):
+    from Growl import GrowlNotifier
+    def __init__(self, user, follow_usernames):
+        self.growl = self.GrowlNotifier(applicationName="twitstream", notifications=['Status', 'Self', 'Friend', 'Reply', 'Direct'])
+        self.growl.register()
+        self.user = user
+        self.follow_usernames = set(follow_usernames)
+        
+    def __call__(self, status):
+        if 'user' not in status:
+            if options.debug:
+                print >> sys.stderr, status
+            return
+        if status['user']['screen_name'] == self.user:
+            status_type = "Self"
+        elif status['user']['screen_name'] in self.follow_usernames:
+            status_type = "Friend"
+        elif status['in_reply_to_status_id']:
+            status_type = "Reply"
+        else:
+            status_type = "Status"
+        self.growl.notify(status_type,
+                          "%s (%s)" % (status['user']['name'], status['user']['screen_name']),
+                          status['text'])
+
 def filter_dict_with_set(a, b):
     if not a:
         return b
@@ -164,6 +189,7 @@ if __name__ == '__main__':
     parser = twitstream.parser
     parser.add_option('-g', '--pages', help="Number of pages to check (default: 3)", type='int', default=3)
     parser.add_option('-m', '--maximum', help="Maximum number of users to track (default/max: 200)", type='int', default=200)
+    parser.add_option('--growl', help="Send notifications to Growl (Mac only)", action='store_true', dest='growl')
     group = OptionGroup(parser, "filters",
                         "Combining more than one of the user filters takes the "
                         "intersection of the predicates.")
@@ -253,7 +279,10 @@ if __name__ == '__main__':
         print status_wrap.fill(", ".join(follow_usernames))
     print
     
-    prettyprint = Formatter(follow_usernames)
+    if options.growl:
+        prettyprint = Growler(user, follow_usernames)
+    else:
+        prettyprint = Formatter(follow_usernames)
     
     stream = twitstream.follow(options.username, options.password, prettyprint, follow_ids)
     
