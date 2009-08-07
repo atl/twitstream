@@ -4,7 +4,6 @@
 # http://twistori.com/
 
 import textwrap
-import asyncore
 import getpass
 import re
 import sys

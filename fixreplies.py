@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import textwrap
-import asyncore
 import getpass
 import re
 import sys
@@ -15,7 +14,7 @@ except ImportError:
 import twitter
 import twitstream
 
-USAGE = """%prog [options] [user]
+USAGE = """%prog [options] [user] <filter1> [<filter2> ...]
 
 Grabs the users that are members of all of the filter sets.
 The Streaming API 'follow' method gets each of the named users'
@@ -23,7 +22,7 @@ public status messages and the replies to each of them.
 
 Note that there can be a heavy API load at the start, roughly
 the number of pages times the number of predicates, so be 
-careful!"""
+careful of API limits!"""
 
 def GetFavorites(api, 
                  user=None,
