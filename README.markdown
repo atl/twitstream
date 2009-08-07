@@ -63,15 +63,23 @@ your friends, followers, favorites and/or conversations to derive a list of
 people to follow (which can cause a lot of API calls at startup). It then uses
 the [streaming API][]'s `follow` method to get all tweets to and from those
 chosen users. For example, the following command line will check your latest
-500 status messages for people whom you've replied to, and filters out the
+500 status messages for people to whom you've replied, and filters out the
 people you do not already follow as well as a couple celebrities that everyone
 seems to empathize with:
 
     fixreplies.py --pages 5 --chat --friends --exclude=stephenfry,Oprah
 
+For Mac users, there is a `--growl` option, which uses the [Growl][]
+notification framework and its Python interface available in the 
+[Growl SDK][]. The class does its best at distinguishing between categories 
+of status messages, allowing a user to change display options.
+
 This code example uses a variant upon the status pretty-printing of the
 textori example. The chief purpose of this example is to use Twitter's
-traditional API in order to get more use out of the streaming API.
+traditional API in order to get more use out of the streaming API. 
+
+[Growl]: http://growl.info/
+[Growl SDK]: http://growl.info/downloads_developers.php
 
 ## stats ##
 
@@ -82,6 +90,25 @@ prints a summary of the statistic collected.
 
     stats.py friends
     stats.py timezone --max 15
+
+## warehouse ##
+
+If you want to examine statistics off-line, the latest batch of schema-free
+JSON document stores, like [MongoDB][] or Apache [CouchDB][], make for good
+candidates. `warehouse.py` runs the `spritzer` method and stores each status
+message in the designated data store. The implementation currently includes
+adaptors for MongoDB and CouchDB, and would welcome models for your favorite
+ORM+RDBMS.
+
+    warehouse.py
+    warehouse.py mongo://localhost:27017/db/twitcollection
+
+The most notable addition in this example is the correct handling of `delete`
+updates: it attempts to delete the referenced status message if it is in the
+database.
+
+[MongoDB]: http://www.mongodb.org/
+[CouchDB]: http://couchdb.apache.org/
 
 # Programming #
 

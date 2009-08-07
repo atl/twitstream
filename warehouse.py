@@ -3,7 +3,7 @@
 import sys
 import twitstream
 from urlparse import urlunsplit, urlsplit
-from binascii import unhexlify
+from binascii import unhexlify, hexlify
 
 
 # Provide documentation:
@@ -14,8 +14,8 @@ The optional dburl is constructed as:
   [mongo|couch]://host:port/path
 
 MongoDB offers up to two levels of path (database/collection), while
-CouchDB uses one. The default behavior is to try CouchDB in preference to
-MongoDB on localhost, with a path of "test"."""
+CouchDB uses one. The default behavior is to try CouchDB first, falling
+back to MongoDB on localhost, with a path of "test" (or "test/test")."""
 
 class Mongo(object):
     from pymongo.connection import Connection
@@ -29,15 +29,18 @@ class Mongo(object):
             pathdb = 'test'
         if not pathcoll:
             pathcoll = pathdb
-        self.db = self.conn[pathdb][pathcoll]
+        self.data = self.conn[pathdb][pathcoll]
     
     def status_id(self, num):
+        """Derive an ObjectID from the status id."""
         return self.ObjectId(unhexlify('74776974' + ("%x" % num).zfill(16)))
     
     def remove(self, num):
-        self.db.remove(self.status_id(num))
+        self.data.remove(self.status_id(num))
     
     def twitsafe(self, status):
+        """Change Longs to hex strings to work around MongoDB's assumption
+        of 32-bit ints."""
         status['_id'] = self.status_id(status.get('id'))
         if status.get('id'):
             status['id'] = ('%x' % status['id']).zfill(16)
@@ -46,33 +49,33 @@ class Mongo(object):
         return status
     
     def store(self, num, status):
-        self.db.save(status)
+        self.data.save(status)
 
 class Couch(object):
     from couchdb.client import Server
     def __init__(self, location=None, port=None, path=''):
         lp = list([location or 'localhost', port or 5984])
         lp[1] = str(lp[1])
-        dburl = urlunsplit(('http', ':'.join(lp), path, '', ''))
+        dburl = urlunsplit(('http', ':'.join(lp), '', '', ''))
         self.conn = self.Server(dburl)
         if not path:
             path = 'test'
         if path not in self.conn:
-            self.db = self.conn.create(path)
+            self.data = self.conn.create(path)
         else:
-            self.db = self.conn[path]
+            self.data = self.conn[path]
     
     def status_id(self, num):
         return ("%x" % num).zfill(16)
     
     def remove(self, num):
-        del self.db[self.status_id(num)]
+        del self.data[self.status_id(num)]
     
     def twitsafe(self, status):
         return status
     
     def store(self, num, status):
-        self.db[self.status_id(num)] = status
+        self.data[self.status_id(num)] = status
 
 
 KNOWN = {'mongo': Mongo,
@@ -98,7 +101,7 @@ class Warehouse(object):
             try:
                 self.db.remove(status.get('delete').get('status').get('id'))
                 print >> sys.stderr, "-",
-            except StandardError:
+            except Exception:
                 print >> sys.stderr, ",",
             sys.stderr.flush()
         elif status.get('user'):
@@ -107,7 +110,7 @@ class Warehouse(object):
             try:
                 self.db.store(idnum, status)
                 print >> sys.stderr, ".",
-            except StandardError:
+            except Exception:
                 print >> sys.stderr, ";",
             sys.stderr.flush()
         else:
