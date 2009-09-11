@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-import twitstream
+from twitstream import twitstream
 from urlparse import urlunsplit, urlsplit
 from binascii import unhexlify, hexlify
 

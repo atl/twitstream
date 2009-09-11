@@ -12,7 +12,7 @@ except ImportError:
     import simplejson
 
 import twitter
-import twitstream
+from twitstream import twitstream
 
 USAGE = """%prog [options] [user] <filter1> [<filter2> ...]
 

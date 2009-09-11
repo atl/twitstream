@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # The key module provided here:
-import twitstream
+from twitstream import twitstream
 
 # Provide documentation:
 USAGE = """%prog [options] 

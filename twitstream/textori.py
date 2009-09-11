@@ -14,7 +14,7 @@ except ImportError:
     import simplejson
 
 import twitter
-import twitstream
+from twitstream import twitstream
 
 USAGE = """%prog [options] [[keyword1] keyword2 ...]
 

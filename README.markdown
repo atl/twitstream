@@ -135,7 +135,7 @@ could use something like this:
 
     #!/usr/bin/env python
     
-    import twitstream
+    from twitstream import twitstream
     
     USER = 'test'
     PASS = 'test'
