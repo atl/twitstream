@@ -38,7 +38,7 @@ typical usage will focus on the `twitstream` module.
 [Tornado]: http://www.tornadoweb.org/
 [IOStream]: http://github.com/facebook/tornado/blob/master/tornado/iostream.py
 
-## Usage ##
+# Usage #
 
 Twitstream is usable from the command line as a rudimentary client:
 
@@ -50,7 +50,8 @@ Every usage of the streaming API requires authentication against a user
 account. The methods available to the general public are `spritzer`, `track`,
 and `follow`.
 
-## textori ##
+## Example applications ##
+### textori ###
 
 A simple implementation of a tweet display roughly modeled on [twistori][].
 Takes in keywords and pretty-prints a live `track`ing stream from the keywords 
@@ -63,7 +64,7 @@ parsing all accomplished in a single (lengthy) callable.
 
 [twistori]: http://twistori.com/
 
-## fixreplies ##
+### fixreplies ###
 
 As a proof-of-concept, there's the modestly-named `fixreplies.py`, which mines
 your friends, followers, favorites and/or conversations to derive a list of
@@ -88,7 +89,7 @@ traditional API in order to get more use out of the streaming API.
 [Growl]: http://growl.info/
 [Growl SDK]: http://growl.info/downloads_developers.php
 
-## stats ##
+### stats ###
 
 A proof-of-concept showing that you don't need to print out every tweet in the
 callback. `stats.py` sets up a counter/histogram on the status characteristic
@@ -98,7 +99,7 @@ prints a summary of the statistic collected.
     stats.py friends
     stats.py timezone --max 15
 
-## warehouse ##
+### warehouse ###
 
 If you want to examine statistics off-line, the latest batch of schema-free
 JSON document stores, like [MongoDB][] or Apache [CouchDB][], make for good
