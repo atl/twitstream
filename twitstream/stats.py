@@ -122,7 +122,8 @@ if __name__ == '__main__':
     twitstream.ensure_credentials(options)            
     count = Counter(field)
     
-    stream = twitstream.spritzer(options.username, options.password, count, debug=options.debug)
+    stream = twitstream.spritzer(options.username, options.password, count, 
+                                 debug=options.debug, engine=options.engine)
     
     try:
         stream.run()

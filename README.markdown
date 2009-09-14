@@ -19,17 +19,24 @@ Python 2.5 or higher. If using Python 2.5, also uses [simplejson][] (which is
 included in Python 2.6 as [json][]). The more elaborate example programs
 `fixreplies.py` and `textori.py` also require the [python-twitter][] library.
 
-If you have [PycURL][] installed, you can benefit from its time-tested,
-non-blocking HTTP client implementation. Otherwise, it falls back to the
-custom, basic implementation built upon the standard library. Both the
-`twitasync.py` and the `twitcurl.py` modules transparently expose the same
-basic interface to the main `twitstream.py` module: all typical usage will
-focus on the `twitstream` module.
+Because I don't have the utmost confidence in my original hacked-together ad
+hoc HTTP client (although it's stood up fairly well), you have a choice of
+asyncronous IO "engines." If you have [PycURL][] installed, you may choose its
+time-tested, non-blocking HTTP client implementation with a `--curl`
+command-line option. If you have Facebook/FriendFeed's open-source
+[Tornado][], then you can choose its [iostream][] sub-module with a
+`--tornado` option. In all other cases, it falls back to the basic
+implementation built upon the standard library invoked with `--async`. The
+`twitasync.py`, `twittornado.py`, and `twitcurl.py` modules transparently
+expose the same basic interface to the main `twitstream.py` module: all
+typical usage will focus on the `twitstream` module.
 
 [simplejson]: http://pypi.python.org/pypi/simplejson/
 [json]: http://docs.python.org/library/json.html
 [python-twitter]: http://code.google.com/p/python-twitter/
 [PycURL]: http://pycurl.sourceforge.net/
+[Tornado]: http://www.tornadoweb.org/
+[IOStream]: http://github.com/facebook/tornado/blob/master/tornado/iostream.py
 
 ## Usage ##
 
@@ -114,17 +121,18 @@ database.
 
 The interface provides relatively low-level specialized streaming HTTP GET and
 POST classes (currently geared specifically towards Twitter, and provided in
-both an [asynchat][] and a [libcurl][] flavor), a general `twitstream`
-function that accepts an API method name and routes the software there, and
-individual functions that match the API methods (including `spritzer`,
-`track`, and `follow`). Each of these returns a request-like object that, when
-invoked with the `run()` method, opens the connection and continues into a
-loop until interrupted. The only programming you need to provide is a function
-(or callable) that gets called with a dictionary containing the latest single
-status.
+[asynchat][], [tornado.iostream][], and [libcurl][] flavors), a general
+`twitstream` function that accepts an API method name and routes the software
+there, and individual functions that match the API methods (including
+`spritzer`, `track`, and `follow`). Each of these returns a request-like
+object that, when invoked with the `run()` method, opens the connection and
+continues into a loop until interrupted. The only programming you need to
+provide is a function (or callable) that gets called with a dictionary
+containing the latest single status.
 
 [asynchat]: http://docs.python.org/library/asynchat.html
 [libcurl]: http://curl.haxx.se/libcurl/
+[tornado.iostream]: http://github.com/facebook/tornado/blob/master/tornado/iostream.py
 
 For example, the basic
 [spritz.py](http://github.com/atl/twitstream/blob/master/spritz.py) example

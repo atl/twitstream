@@ -286,6 +286,6 @@ if __name__ == '__main__':
     else:
         prettyprint = Formatter(follow_usernames)
     
-    stream = twitstream.follow(options.username, options.password, prettyprint, follow_ids)
+    stream = twitstream.follow(options.username, options.password, prettyprint, follow_ids, engine=options.engine)
     
     stream.run()

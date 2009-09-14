@@ -5,11 +5,6 @@ import getpass
 from optparse import OptionParser, OptionGroup
 from functools import partial
 
-try:
-    from twitcurl import TwitterStreamGET, TwitterStreamPOST
-except ImportError:
-    from twitasync import TwitterStreamGET, TwitterStreamPOST
-
 USAGE = """%prog [options] method [params]
 
 Public methods are 'spritzer', 'follow', and 'track'. Follow takes
@@ -34,7 +29,7 @@ def DEFAULTACTION(status):
     print "%s:\t%s\n" % (status.get('user', {}).get('screen_name'), status.get('text'))
 
 
-def twitstream(method, user, pword, action, defaultdata=[], debug=False, **kwargs):
+def twitstream(method, user, pword, action, defaultdata=[], debug=False, engine='async', **kwargs):
     '''General function to set up an asynchat object on twitter. Chooses GET or
     POST according to the API method.
     
@@ -43,6 +38,16 @@ def twitstream(method, user, pword, action, defaultdata=[], debug=False, **kwarg
     Parameter defaultdata expects an iterable of strings as the default parameter 
     (follow or track) on a POST method. If there are additional parameters you
     wish to use, they can be passed in **kwargs.'''
+    try:
+        if engine == 'curl':
+            from twitcurl import TwitterStreamGET, TwitterStreamPOST
+        elif engine == 'tornado':
+            from twittornado import TwitterStreamGET, TwitterStreamPOST
+        else:
+            from twitasync import TwitterStreamGET, TwitterStreamPOST            
+    except ImportError:
+        from twitasync import TwitterStreamGET, TwitterStreamPOST
+    
     url = BASEURL % method
     if method in GETMETHODS:
         return TwitterStreamGET(user, pword, url, action, debug)
@@ -66,7 +71,7 @@ follow.__doc__   = "receive all public status messages from, and all public repl
 track.__doc__    = "receive all real-time mentions of any of the input terms"
 
 parser = OptionParser(usage=USAGE)
-group = OptionGroup(parser, "credentials",
+group = OptionGroup(parser, 'credentials',
                     "All usage of the Streaming API requires user credentials. "
                     "Will prompt if either of them are missing.")
 group.add_option('-p', '--password', help="Twitter password")
@@ -74,6 +79,16 @@ group.add_option('-u', '--username', help="Twitter username")
 parser.add_option_group(group)
 parser.add_option('--debug', action='store_true', dest='debug', 
                     default=False, help="Print debug information")
+egroup = OptionGroup(parser, 'engine',
+                    "Selects the underlying library for asyncronous I/O.")
+egroup.add_option('--async', action='store_const', const='async', 
+                  dest='engine', default='async', help="Default builtin async library")
+egroup.add_option('--curl', action='store_const', const='curl', 
+                  dest='engine', help="Use the PycURL library")
+egroup.add_option('--tornado', action='store_const', const='tornado', 
+                  dest='engine', help="Use Tornado's iostream library")
+parser.add_option_group(egroup)
+
 
 def ensure_credentials(options):
     if not options.username:
@@ -84,7 +99,7 @@ def ensure_credentials(options):
 
 if __name__ == '__main__':
     (options, args) = parser.parse_args()
-    
+        
     if len(args) < 1:
         parser.error("requires one method argument")
     else:
@@ -94,6 +109,7 @@ if __name__ == '__main__':
     
     ensure_credentials(options)
     
-    stream = twitstream(method, options.username, options.password, DEFAULTACTION, defaultdata=args[1:], debug=options.debug)
+    stream = twitstream(method, options.username, options.password, DEFAULTACTION, 
+                defaultdata=args[1:], debug=options.debug, engine=options.engine)
     
     stream.run()

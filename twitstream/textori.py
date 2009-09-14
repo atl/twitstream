@@ -8,10 +8,6 @@ import getpass
 import re
 import sys
 import htmlentitydefs
-try:
-    import json as simplejson
-except ImportError:
-    import simplejson
 
 import twitter
 from twitstream import twitstream
@@ -85,6 +81,6 @@ if __name__ == '__main__':
     
     prettyprint = Formatter(args)
     
-    stream = twitstream.track(options.username, options.password, prettyprint, args, options.debug)
+    stream = twitstream.track(options.username, options.password, prettyprint, args, options.debug, engine=options.engine)
     
     stream.run()
