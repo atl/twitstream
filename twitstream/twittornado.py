@@ -9,7 +9,11 @@ try:
 except ImportError:
     import simplejson as json
 
-USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream)"
+# Yes, this is very strongly based upon the twitasync approach.
+# There was little call to change my approach on a first pass,
+# and the IOStream interface is very similar to asyncore/asynchat.
+
+USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream), using tornado.iostream"
 
 class TwitterStreamGET(object):
     def __init__(self, user, pword, url, action, debug=False):

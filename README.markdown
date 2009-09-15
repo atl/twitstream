@@ -16,20 +16,23 @@ For a Twisted solution, see [twitty-twister][].
 ## Requirements ##
 
 Python 2.5 or higher. If using Python 2.5, also uses [simplejson][] (which is
-included in Python 2.6 as [json][]). The more elaborate example programs
-`fixreplies.py` and `textori.py` also require the [python-twitter][] library.
+included in Python 2.6 as [json][]). There are no requirements beyond that.
+
+The more elaborate example programs `fixreplies.py` and `textori.py` require
+the [python-twitter][] library.
 
 Because I don't have the utmost confidence in my original hacked-together ad
-hoc HTTP client (although it's stood up fairly well), you have a choice of
-asyncronous IO "engines." If you have [PycURL][] installed, you may choose its
-time-tested, non-blocking HTTP client implementation with a `--curl`
-command-line option. If you have Facebook/FriendFeed's open-source
-[Tornado][], then you can choose its [iostream][] sub-module with a
-`--tornado` option. In all other cases, it falls back to the basic
-implementation built upon the standard library invoked with `--async`. The
-`twitasync.py`, `twittornado.py`, and `twitcurl.py` modules transparently
-expose the same basic interface to the main `twitstream.py` module: all
-typical usage will focus on the `twitstream` module.
+hoc HTTP client (although it's stood up fairly well), you have a _choice_ of
+asynchronous IO "engines." If you have [PycURL][] installed, you may choose
+its time-tested, non-blocking HTTP client implementation with a `--curl`
+command-line option used with any of the example applications. If you have
+Facebook/FriendFeed's open-source [Tornado][], then you can choose its
+[iostream][] sub-module with a `--tornado` option. In all other cases, it
+falls back to the basic implementation built upon the standard library invoked
+with `--async`. The `twitasync.py`, `twittornado.py`, and `twitcurl.py`
+modules transparently expose the same basic interface to the main
+`twitstream.py` module: all typical usage will focus on the `twitstream`
+module.
 
 [simplejson]: http://pypi.python.org/pypi/simplejson/
 [json]: http://docs.python.org/library/json.html
@@ -53,9 +56,10 @@ and `follow`.
 ## Example applications ##
 ### textori ###
 
-A simple implementation of a tweet display roughly modeled on [twistori][].
-Takes in keywords and pretty-prints a live `track`ing stream from the keywords 
-entered. The below-listed keywords are the default setting.
+As a simple implementation of a tweet display roughly modeled on [twistori][],
+`textori.py` takes in keywords and pretty-prints a live `track`ing stream from
+the keywords entered. The below-listed keywords are used as the default
+setting, when no keywords are entered.
 
     textori.py love hate think believe feel wish
 

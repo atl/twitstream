@@ -11,7 +11,7 @@ try:
 except ImportError:
     import simplejson as json
 
-USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream)"
+USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream), using asynchat"
 
 class TwitterStreamGET(asynchat.async_chat):
     def __init__(self, user, pword, url, action, debug=False):

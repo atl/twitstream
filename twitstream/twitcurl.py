@@ -8,7 +8,7 @@ except ImportError:
     import json
 
 
-USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream)"
+USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream), using PycURL"
 
 class TwitterStreamGET(object):
     def __init__(self, user, pword, url, action, debug=False):

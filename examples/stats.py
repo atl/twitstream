@@ -76,6 +76,7 @@ class Counter(object):
         sys.stderr.flush()
     
     def top(self, count):
+        print
         if self.field in self.UNORDERED:
             hist = sorted(self.counter.items(), key=lambda x: x[1], reverse=True)
             for val in hist[:count]:
