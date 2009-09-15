@@ -43,11 +43,11 @@ module.
 
 # Usage #
 
-Twitstream is usable from the command line as a rudimentary client:
+Twitstream-test is usable from the command line as a very rudimentary client:
 
-    twitstream.py spritzer
-    twitstream.py track ftw fail
-    twitstream.py follow 12 13 15 16 20 87
+    twitstream-test.py spritzer
+    twitstream-test.py track ftw fail
+    twitstream-test.py follow 12 13 15 16 20 87
 
 Every usage of the streaming API requires authentication against a user
 account. The methods available to the general public are `spritzer`, `track`,
@@ -148,7 +148,7 @@ could use something like this:
 
     #!/usr/bin/env python
     
-    from twitstream import twitstream
+    import twitstream
     
     USER = 'test'
     PASS = 'test'

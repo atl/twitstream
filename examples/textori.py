@@ -10,7 +10,7 @@ import sys
 import htmlentitydefs
 
 import twitter
-from twitstream import twitstream
+import twitstream
 
 USAGE = """%prog [options] [[keyword1] keyword2 ...]
 

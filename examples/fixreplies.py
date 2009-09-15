@@ -12,7 +12,7 @@ except ImportError:
     import simplejson
 
 import twitter
-from twitstream import twitstream
+import twitstream
 
 USAGE = """%prog [options] [user] <filter1> [<filter2> ...]
 
@@ -150,8 +150,8 @@ class Formatter(object):
     
 
 class Growler(object):
-    from Growl import GrowlNotifier, Image
     def __init__(self, user=None, follow_usernames=[]):
+        from Growl import GrowlNotifier, Image
         image = self.Image.imageFromPath('./twitter.bmp')
         self.growl = self.GrowlNotifier(applicationName="twitstream", 
             notifications=['Status', 'Self', 'Friend', 'Reply', 'Direct'],

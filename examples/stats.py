@@ -7,7 +7,7 @@ import sys
 from collections import defaultdict
 from urlparse import urlparse
 
-from twitstream import twitstream
+import twitstream
 
 USAGE = """stats.py [options] <key>
 
