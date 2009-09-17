@@ -8,10 +8,14 @@ The idea was to make the least effort possible to get things working. All of
 the standard HTTP client libraries seemed to block until the end of
 transmission, making them inappropriate for use with the streaming API.
 
-For a Twisted solution, see [twitty-twister][].
+For a Twisted solution, see [twitty-twister][]. Other interesting Python
+modules using the streaming API via different approaches are [tweepy][] and
+[instwitter-py][].
 
 [streaming API]: http://apiwiki.twitter.com/Streaming-API-Documentation
-[twitty-twister]: http://github.com/dustin/twitty-twister/blob/master/example/feed.py
+[twitty-twister]: http://github.com/dustin/twitty-twister
+[tweepy]: http://github.com/joshthecoder/tweepy
+[instwitter-py]: http://github.com/sovnarkom/instwitter-py
 
 ## Requirements ##
 
@@ -21,18 +25,18 @@ included in Python 2.6 as [json][]). There are no requirements beyond that.
 The more elaborate example programs `fixreplies.py` and `textori.py` require
 the [python-twitter][] library.
 
-Because I don't have the utmost confidence in my original hacked-together ad
-hoc HTTP client (although it's stood up fairly well), you have a _choice_ of
-asynchronous IO "engines." If you have [PycURL][] installed, you may choose
-its time-tested, non-blocking HTTP client implementation with a `--curl`
-command-line option used with any of the example applications. If you have
-Facebook/FriendFeed's open-source [Tornado][], then you can choose its
-[iostream][] sub-module with a `--tornado` option. In all other cases, it
-falls back to the basic implementation built upon the standard library invoked
-with `--async`. The `twitasync.py`, `twittornado.py`, and `twitcurl.py`
-modules transparently expose the same basic interface to the main
-`twitstream.py` module: all typical usage will focus on the `twitstream`
-module.
+Because I like to offer flexibility, and started out not having the utmost
+confidence in my original hacked-together HTTP client (although it's stood up
+fairly well), you have a _choice_ of asynchronous IO "engines." If you have
+[PycURL][] installed, you may choose its time-tested, non-blocking HTTP client
+implementation with a `--curl` command-line option used with any of the
+example applications. If you have Facebook/FriendFeed's open-source
+[Tornado][], then you can choose its [iostream][] sub-module with a
+`--tornado` option. In all other cases, it falls back to the basic
+implementation built upon the standard library invoked with `--async`. The
+`twitasync.py`, `twittornado.py`, and `twitcurl.py` modules transparently
+expose the same basic interface to the main `twitstream` module: all typical
+usage will focus on the `twitstream` module.
 
 [simplejson]: http://pypi.python.org/pypi/simplejson/
 [json]: http://docs.python.org/library/json.html
