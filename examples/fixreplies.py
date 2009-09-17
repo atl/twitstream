@@ -190,7 +190,7 @@ def filter_dict_with_set(a, b):
 if __name__ == '__main__':
     parser = twitstream.parser
     parser.add_option('-g', '--pages', help="Number of pages to check (default: 3)", type='int', default=3)
-    parser.add_option('-m', '--maximum', help="Maximum number of users to track (default/max: 200)", type='int', default=200)
+    parser.add_option('-m', '--maximum', help="Maximum number of users to track (default/max: 400)", type='int', default=400)
     parser.add_option('--growl', help="Send notifications to Growl (Mac only)", action='store_true', dest='growl')
     group = OptionGroup(parser, "filters",
                         "Combining more than one of the user filters takes the "
@@ -269,7 +269,7 @@ if __name__ == '__main__':
         follow = dict(map(lambda x:(x[1],x[0]), invdict.items()))
         if options.debug: print "after filtering excludes:", follow
     
-    options.maximum = min(200, options.maximum)
+    options.maximum = min(400, options.maximum)
     if len(follow) > options.maximum:
         print "found %d, discarding %d..." % (len(follow), len(follow) - options.maximum)
         follow = dict(follow.items()[:options.maximum])

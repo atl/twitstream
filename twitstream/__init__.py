@@ -19,6 +19,16 @@ POSTPARAMS  = {'birddog': 'follow',
 
 BASEURL = "http://stream.twitter.com/%s.json"
 
+METHODPATH   = {'firehose': '1/statuses/firehose',
+                'birddog':  '1/statuses/sample',
+                'spritzer': '1/statuses/sample',
+                'birddog':  '1/statuses/filter',
+                'shadow':   '1/statuses/filter',
+                'follow':   '1/statuses/filter',
+                'track':    '1/statuses/filter',
+                'filter':   '1/statuses/filter',
+                'retweet':  '1/statuses/retweet',}
+
 def DEFAULTACTION(status):
     if "user" not in status:
         try:
@@ -49,7 +59,7 @@ def twitstream(method, user, pword, action, defaultdata=[], debug=False, engine=
     except ImportError:
         from twitasync import TwitterStreamGET, TwitterStreamPOST
     
-    url = BASEURL % method
+    url = BASEURL % METHODPATH[method]
     if method in GETMETHODS:
         return TwitterStreamGET(user, pword, url, action, debug)
     elif method in POSTPARAMS.keys():
