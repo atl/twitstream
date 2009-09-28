@@ -10,7 +10,8 @@ user IDs as parameters, and track takes keywords."""
 
 GETMETHODS  = ['firehose',
                'gardenhose',
-               'spritzer',]
+               'spritzer',
+               'retweet']
 
 POSTPARAMS  = {'birddog': 'follow',
                'shadow':  'follow',
@@ -76,6 +77,7 @@ birddog    = partial(twitstream, 'birddog')
 shadow     = partial(twitstream, 'shadow')
 follow     = partial(twitstream, 'follow')
 track      = partial(twitstream, 'track')
+retweet    = partial(twitstream, 'retweet')
 
 spritzer.__doc__ = "obtain a real-time stream of a subset of all public status messages"
 follow.__doc__   = "receive all public status messages from, and all public replies to, the twitter user IDs"
