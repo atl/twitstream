@@ -11,7 +11,8 @@ user IDs as parameters, and track takes keywords."""
 GETMETHODS  = ['firehose',
                'gardenhose',
                'spritzer',
-               'retweet']
+               'retweet',
+               'links',]
 
 POSTPARAMS  = {'birddog': 'follow',
                'shadow':  'follow',
@@ -20,7 +21,8 @@ POSTPARAMS  = {'birddog': 'follow',
 
 BASEURL = "http://stream.twitter.com/%s.json"
 
-METHODPATH   = {'firehose': '1/statuses/firehose',
+METHODPATH   = {
+                'firehose': '1/statuses/firehose',
                 'birddog':  '1/statuses/sample',
                 'spritzer': '1/statuses/sample',
                 'birddog':  '1/statuses/filter',
@@ -28,7 +30,9 @@ METHODPATH   = {'firehose': '1/statuses/firehose',
                 'follow':   '1/statuses/filter',
                 'track':    '1/statuses/filter',
                 'filter':   '1/statuses/filter',
-                'retweet':  '1/statuses/retweet',}
+                'retweet':  '1/statuses/retweet',
+                'links':    '1/statuses/links',
+                }
 
 def DEFAULTACTION(status):
     if "user" not in status:
@@ -78,6 +82,7 @@ shadow     = partial(twitstream, 'shadow')
 follow     = partial(twitstream, 'follow')
 track      = partial(twitstream, 'track')
 retweet    = partial(twitstream, 'retweet')
+links      = partial(twitstream, 'links')
 
 spritzer.__doc__ = "obtain a real-time stream of a subset of all public status messages"
 follow.__doc__   = "receive all public status messages from, and all public replies to, the twitter user IDs"
@@ -109,20 +114,3 @@ def ensure_credentials(options):
     if not options.password:
         options.password = getpass.getpass(prompt='Password for %s: ' % options.username)
     return options
-
-# if __name__ == '__main__':
-#     (options, args) = parser.parse_args()
-#         
-#     if len(args) < 1:
-#         parser.error("requires one method argument")
-#     else:
-#         method = args[0]
-#         if method not in GETMETHODS and method not in POSTPARAMS:
-#             raise NotImplementedError("Unknown method: %s" % method)
-#     
-#     ensure_credentials(options)
-#     
-#     stream = twitstream(method, options.username, options.password, DEFAULTACTION, 
-#                 defaultdata=args[1:], debug=options.debug, engine=options.engine)
-#     
-#     stream.run()
