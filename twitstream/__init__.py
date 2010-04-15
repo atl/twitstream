@@ -1,7 +1,9 @@
 import sys
 import getpass
+import itertools
 from optparse import OptionParser, OptionGroup
 from functools import partial
+from collections import defaultdict
 
 USAGE = """%prog [options] method [params]
 
@@ -17,9 +19,14 @@ GETMETHODS  = ['firehose',
 POSTPARAMS  = {'birddog': 'follow',
                'shadow':  'follow',
                'follow':  'follow',
-               'track':   'track',}
+               'track':   'track',
+               'user':    'track',}
 
-BASEURL = "http://stream.twitter.com/%s.json"
+def constant_factory(value):
+    return itertools.repeat(value).next
+
+BASEURL = defaultdict(constant_factory("http://stream.twitter.com/%s.json"))
+BASEURL['user'] = "http://chirpstream.twitter.com/%s.json"
 
 METHODPATH   = {
                 'firehose': '1/statuses/firehose',
@@ -32,6 +39,7 @@ METHODPATH   = {
                 'filter':   '1/statuses/filter',
                 'retweet':  '1/statuses/retweet',
                 'links':    '1/statuses/links',
+                'user':     '2b/user',
                 }
 
 def DEFAULTACTION(status):
@@ -43,7 +51,6 @@ def DEFAULTACTION(status):
         except:
             pass
     print "%s:\t%s\n" % (status.get('user', {}).get('screen_name'), status.get('text'))
-
 
 def twitstream(method, user, pword, action, defaultdata=[], debug=False, engine='async', **kwargs):
     '''General function to set up an asynchat object on twitter. Chooses GET or
@@ -64,7 +71,7 @@ def twitstream(method, user, pword, action, defaultdata=[], debug=False, engine=
     except ImportError:
         from twitasync import TwitterStreamGET, TwitterStreamPOST
     
-    url = BASEURL % METHODPATH[method]
+    url = BASEURL[method] % METHODPATH[method]
     if method in GETMETHODS:
         return TwitterStreamGET(user, pword, url, action, debug)
     elif method in POSTPARAMS.keys():
@@ -83,6 +90,7 @@ follow     = partial(twitstream, 'follow')
 track      = partial(twitstream, 'track')
 retweet    = partial(twitstream, 'retweet')
 links      = partial(twitstream, 'links')
+userstream = partial(twitstream, 'user')
 
 spritzer.__doc__ = "obtain a real-time stream of a subset of all public status messages"
 follow.__doc__   = "receive all public status messages from, and all public replies to, the twitter user IDs"
