@@ -14,13 +14,13 @@ GETMETHODS  = ['firehose',
                'gardenhose',
                'spritzer',
                'retweet',
-               'links',]
+               'links',
+               'user',]
 
 POSTPARAMS  = {'birddog': 'follow',
                'shadow':  'follow',
                'follow':  'follow',
-               'track':   'track',
-               'user':    'track',}
+               'track':   'track',}
 
 def constant_factory(value):
     return itertools.repeat(value).next
