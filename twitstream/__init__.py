@@ -29,17 +29,17 @@ BASEURL = defaultdict(constant_factory("http://stream.twitter.com/%s.json"))
 BASEURL['user'] = "http://chirpstream.twitter.com/%s.json"
 
 METHODPATH   = {
-                'firehose': '1/statuses/firehose',
-                'birddog':  '1/statuses/sample',
-                'spritzer': '1/statuses/sample',
-                'birddog':  '1/statuses/filter',
-                'shadow':   '1/statuses/filter',
-                'follow':   '1/statuses/filter',
-                'track':    '1/statuses/filter',
-                'filter':   '1/statuses/filter',
-                'retweet':  '1/statuses/retweet',
-                'links':    '1/statuses/links',
-                'user':     '2b/user',
+                'firehose':   '1/statuses/firehose',
+                'gardenhose': '1/statuses/sample',
+                'spritzer':   '1/statuses/sample',
+                'birddog':    '1/statuses/filter',
+                'shadow':     '1/statuses/filter',
+                'follow':     '1/statuses/filter',
+                'track':      '1/statuses/filter',
+                'filter':     '1/statuses/filter',
+                'retweet':    '1/statuses/retweet',
+                'links':      '1/statuses/links',
+                'user':       '2b/user',
                 }
 
 def DEFAULTACTION(status):
