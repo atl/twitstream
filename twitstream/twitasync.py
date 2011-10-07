@@ -6,6 +6,8 @@ import urllib
 import sys
 from urlparse import urlparse
 
+from tlslite.api import *
+
 try:
     import json
 except ImportError:
@@ -30,6 +32,8 @@ class TwitterStreamGET(asynchat.async_chat):
         self.debug = debug
         self.set_terminator("\r\n")
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket = TLSConnection(self.socket)
+        self.socket.handshakeClientCert()
         if self.proxy:
             self.connect( self.proxy )
         else:
