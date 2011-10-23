@@ -15,6 +15,7 @@ except ImportError:
 
 USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream), using asynchat"
 
+
 class TwitterStreamGET(asynchat.async_chat):
     def __init__(self, user, pword, url, action, debug=False):
         asynchat.async_chat.__init__(self)
@@ -32,12 +33,11 @@ class TwitterStreamGET(asynchat.async_chat):
         self.debug = debug
         self.set_terminator("\r\n")
         self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socket = TLSConnection(self.socket)
-        self.socket.handshakeClientCert()
         if self.proxy:
             self.connect( self.proxy )
         else:
-            self.connect( (self.host, 80) )
+            self.connect( (self.host, 443) )
+        
     
     @property
     def request(self):
@@ -64,6 +64,8 @@ class TwitterStreamGET(asynchat.async_chat):
     def handle_connect(self):
         if self.debug:
             print >> sys.stderr, self.request
+        self.socket = TLSConnection(self.socket)
+        self.socket.handshakeClientCert()
         self.push(self.request)
     
     def handle_close(self):
