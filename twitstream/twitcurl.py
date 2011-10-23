@@ -11,9 +11,10 @@ except ImportError:
 USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream), using PycURL"
 
 class TwitterStreamGET(object):
-    def __init__(self, user, pword, url, action, debug=False):
+    def __init__(self, user, pword, url, action, debug=False, preprocessor=json.loads):
         self.debug = debug
         self.userpass = "%s:%s" % (user, pword)
+        self.preprocessor = preprocessor
         self.url = url
         try:
             self.proxy = getproxies()['https']
@@ -39,7 +40,10 @@ class TwitterStreamGET(object):
         q = self.contents.split('\r\n')
         for s in q[:-1]:
             if s.startswith('{'):
-                a = json.loads(s)
+                if self.preprocessor:
+                    a = self.preprocessor(s)
+                else:
+                    a = s
                 self.action(a)
         self.contents = q[-1]
     
@@ -55,8 +59,8 @@ class TwitterStreamGET(object):
         self._request.close()
 
 class TwitterStreamPOST(TwitterStreamGET):
-    def __init__(self, user, pword, url, action, data=tuple(), debug=False):
-        TwitterStreamGET.__init__(self, user, pword, url, action, debug)
+    def __init__(self, user, pword, url, action, data=tuple(), debug=False, preprocessor=json.loads):
+        TwitterStreamGET.__init__(self, user, pword, url, action, debug, preprocessor)
         self.data = data
     
     @property

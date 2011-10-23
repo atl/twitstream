@@ -17,9 +17,10 @@ USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream), using asyncha
 
 
 class TwitterStreamGET(asynchat.async_chat):
-    def __init__(self, user, pword, url, action, debug=False):
+    def __init__(self, user, pword, url, action, debug=False, preprocessor=json.loads):
         asynchat.async_chat.__init__(self)
         self.authkey = base64.b64encode("%s:%s" % (user, pword))
+        self.preprocessor = preprocessor
         self.url = url
         self.host = urlparse(url)[1]
         try:
@@ -55,7 +56,10 @@ class TwitterStreamGET(asynchat.async_chat):
         if self.inbuf.startswith("HTTP/1") and not self.inbuf.endswith("200 OK"):
             print >> sys.stderr, self.inbuf
         elif self.inbuf.startswith('{'):
-            a = json.loads(self.inbuf)
+            if self.preprocessor:
+                a = self.preprocessor(self.inbuf)
+            else:
+                a = self.inbuf
             self.action(a)
         if self.debug:
             print >> sys.stderr, self.inbuf
@@ -80,8 +84,8 @@ class TwitterStreamGET(asynchat.async_chat):
         self.close()
 
 class TwitterStreamPOST(TwitterStreamGET):
-    def __init__(self, user, pword, url, action, data=tuple(), debug=False):
-        TwitterStreamGET.__init__(self, user, pword, url, action, debug)
+    def __init__(self, user, pword, url, action, data=tuple(), debug=False, preprocessor=json.loads):
+        TwitterStreamGET.__init__(self, user, pword, url, action, debug, preprocessor)
         self.data = data
     
     @property

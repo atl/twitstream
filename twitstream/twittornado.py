@@ -17,8 +17,9 @@ import ssl
 USERAGENT = "twitstream.py (http://www.github.com/atl/twitstream), using tornado.iostream"
 
 class TwitterStreamGET(object):
-    def __init__(self, user, pword, url, action, debug=False):
+    def __init__(self, user, pword, url, action, debug=False, preprocessor=json.loads):
         self.authkey = base64.b64encode("%s:%s" % (user, pword))
+        self.preprocessor = preprocessor
         self.url = url
         self.host = urlparse(url)[1]
         try:
@@ -55,7 +56,10 @@ class TwitterStreamGET(object):
         if data.startswith("HTTP/1") and not data.endswith("200 OK\r\n"):
             print >> sys.stderr, data
         if data.startswith('{'):
-            a = json.loads(data)
+            if self.preprocessor:
+                a = self.preprocessor(data)
+            else:
+                a = data
             self.action(a)
         if self.debug:
             print >> sys.stderr, data
@@ -70,8 +74,8 @@ class TwitterStreamGET(object):
         self.stream.close()
 
 class TwitterStreamPOST(TwitterStreamGET):
-    def __init__(self, user, pword, url, action, data=tuple(), debug=False):
-        TwitterStreamGET.__init__(self, user, pword, url, action, debug)
+    def __init__(self, user, pword, url, action, data=tuple(), debug=False, preprocessor=json.loads):
+        TwitterStreamGET.__init__(self, user, pword, url, action, debug, preprocessor)
         self.data = data
     
     @property
