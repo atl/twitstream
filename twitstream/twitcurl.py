@@ -31,6 +31,7 @@ class TwitterStreamGET(object):
         if self.proxy:
             self._request.setopt(self._request.PROXY, self.proxy)
         self._request.setopt(self._request.WRITEFUNCTION, self.body_callback)
+        self._request.setopt(self._request.FTP_SSL, pycurl.FTPSSL_ALL)
         return self._request
     
     def body_callback(self, buf):
