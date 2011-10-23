@@ -8,6 +8,7 @@ try:
     import json
 except ImportError:
     import simplejson as json
+import ssl
 
 # Yes, this is very strongly based upon the twitasync approach.
 # There was little call to change my approach on a first pass,
@@ -22,7 +23,7 @@ class TwitterStreamGET(object):
         self.host = urlparse(url)[1]
         try:
             proxy = urlparse(urllib.getproxies()['https'])[1].split(':')
-            proxy[1] = int(proxy[1]) or 80
+            proxy[1] = int(proxy[1]) or 443
             self.proxy = tuple(proxy)
         except:
             self.proxy = None
@@ -34,7 +35,7 @@ class TwitterStreamGET(object):
         if self.proxy:
             self.connect( self.proxy )
         else:
-            self.connect( (self.host, 80) )
+            self.connect( (self.host, 443) )
     
     @property
     def request(self):
@@ -47,7 +48,8 @@ class TwitterStreamGET(object):
     
     def connect(self, host):
         self.sock.connect(host)
-        self.stream = iostream.IOStream(self.sock)
+        self.sock = ssl.wrap_socket(self.sock, do_handshake_on_connect=False)
+        self.stream = iostream.SSLIOStream(self.sock)
     
     def found_terminator(self, data):
         if data.startswith("HTTP/1") and not data.endswith("200 OK\r\n"):
