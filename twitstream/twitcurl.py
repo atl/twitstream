@@ -16,7 +16,7 @@ class TwitterStreamGET(object):
         self.userpass = "%s:%s" % (user, pword)
         self.url = url
         try:
-            self.proxy = getproxies()['http']
+            self.proxy = getproxies()['https']
         except:
             self.proxy = ''
         self.contents = ""

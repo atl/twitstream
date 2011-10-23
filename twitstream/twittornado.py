@@ -21,7 +21,7 @@ class TwitterStreamGET(object):
         self.url = url
         self.host = urlparse(url)[1]
         try:
-            proxy = urlparse(urllib.getproxies()['http'])[1].split(':')
+            proxy = urlparse(urllib.getproxies()['https'])[1].split(':')
             proxy[1] = int(proxy[1]) or 80
             self.proxy = tuple(proxy)
         except:

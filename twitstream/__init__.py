@@ -25,8 +25,8 @@ POSTPARAMS  = {'birddog': 'follow',
 def constant_factory(value):
     return itertools.repeat(value).next
 
-BASEURL = defaultdict(constant_factory("http://stream.twitter.com/%s.json"))
-BASEURL['user'] = "http://chirpstream.twitter.com/%s.json"
+BASEURL = defaultdict(constant_factory("https://stream.twitter.com/%s.json"))
+BASEURL['user'] = "https://chirpstream.twitter.com/%s.json"
 
 METHODPATH   = {
                 'firehose':   '1/statuses/firehose',
