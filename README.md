@@ -20,7 +20,9 @@ modules using the streaming API via different approaches are [tweepy][] and
 ## Requirements ##
 
 Python 2.5 or higher. If using Python 2.5, also uses [simplejson][] (which is
-included in Python 2.6 as [json][]). There are no requirements beyond that.
+included in Python 2.6 as [json][]). In order to achieve SSL support, the 
+asyncore implementation now depends upon [tlslite][]. 
+There are no requirements beyond that.
 
 The more elaborate example programs `fixreplies.py` and `textori.py` require
 the [python-twitter][] library.
@@ -40,6 +42,7 @@ usage will focus on the `twitstream` module.
 
 [simplejson]: http://pypi.python.org/pypi/simplejson/
 [json]: http://docs.python.org/library/json.html
+[tlslite]: http://pypi.python.org/pypi/tlslite
 [python-twitter]: http://code.google.com/p/python-twitter/
 [PycURL]: http://pycurl.sourceforge.net/
 [Tornado]: http://www.tornadoweb.org/

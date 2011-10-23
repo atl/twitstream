@@ -1,2 +1,2 @@
 simplejson
-python-twitter
+tlslite
